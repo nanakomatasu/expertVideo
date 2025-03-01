@@ -1,0 +1,9 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "uv-icon": "../../uni_modules/uv-icon/components/uv-icon/uv-icon",
+    "uv-line-progress": "../../uni_modules/uv-line-progress/components/uv-line-progress/uv-line-progress",
+    "uv-grid-item": "../../uni_modules/uv-grid/components/uv-grid-item/uv-grid-item",
+    "uv-grid": "../../uni_modules/uv-grid/components/uv-grid/uv-grid"
+  }
+}

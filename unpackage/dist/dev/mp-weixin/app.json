@@ -1,0 +1,96 @@
+{
+  "pages": [
+    "pages/tabbar/index",
+    "pages/tabbar/task",
+    "pages/tabbar/businessSchool",
+    "pages/tabbar/mine",
+    "pages/account/login",
+    "pages/account/forget",
+    "pages/notYetOpen/notYetOpen"
+  ],
+  "subPackages": [
+    {
+      "root": "pages/course",
+      "pages": [
+        "courseDetail"
+      ]
+    },
+    {
+      "root": "pages/mineFunc",
+      "pages": [
+        "announcement",
+        "inviteFriends",
+        "myTeam",
+        "windowAddress",
+        "videoId",
+        "feedback",
+        "questions",
+        "contactUs",
+        "aboutUs"
+      ]
+    },
+    {
+      "root": "pages/announcement",
+      "pages": [
+        "announcementDetail"
+      ]
+    },
+    {
+      "root": "pages/materialLibrary",
+      "pages": [
+        "materialLibrary"
+      ]
+    },
+    {
+      "root": "pages/edit",
+      "pages": [
+        "editUserInfo"
+      ]
+    },
+    {
+      "root": "pages/task",
+      "pages": [
+        "taskDetail"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#BFBFBF",
+    "selectedColor": "#1A1A1A",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/tabbar/index",
+        "iconPath": "/static/tabbarIcon/home.png",
+        "selectedIconPath": "/static/tabbarIcon/selectHome.png"
+      },
+      {
+        "text": "任务",
+        "pagePath": "pages/tabbar/task",
+        "iconPath": "/static/tabbarIcon/task.png",
+        "selectedIconPath": "/static/tabbarIcon/selectTask.png"
+      },
+      {
+        "text": "商学院",
+        "pagePath": "pages/tabbar/businessSchool",
+        "iconPath": "/static/tabbarIcon/businessSchool.png",
+        "selectedIconPath": "/static/tabbarIcon/selectBusinessSchool.png"
+      },
+      {
+        "text": "我的",
+        "pagePath": "pages/tabbar/mine",
+        "iconPath": "/static/tabbarIcon/mine.png",
+        "selectedIconPath": "/static/tabbarIcon/selectMine.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

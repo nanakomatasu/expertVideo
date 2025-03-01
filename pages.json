@@ -1,0 +1,202 @@
+{
+	"easycom": {
+		"custom": {
+			"^tn-(.*)-(item|group)$": "@/uni_modules/tuniaoui-vue3/components/$1/src/$1-$2.vue",
+			"^tn-(.*)": "@/uni_modules/tuniaoui-vue3/components/$1/src/$1.vue"
+		}
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/tabbar/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/tabbar/task",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/tabbar/businessSchool",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/tabbar/mine",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/account/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/account/forget",
+			"style": {
+				"navigationBarTitleText": "找回密码"
+			}
+		},
+		{
+			"path": "pages/notYetOpen/notYetOpen",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}
+	],
+	"subPackages": [{
+			"root": "pages/course",
+			"pages": [{
+				"path": "courseDetail",
+				"style": {
+					"navigationBarTitleText": "图文"
+				}
+			}]
+		},
+		{
+			"root": "pages/mineFunc",
+			"pages": [{
+					"path": "announcement",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "inviteFriends",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "myTeam",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "windowAddress",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "videoId",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "feedback",
+					"style": {
+						"navigationBarTitleText": "建议与反馈"
+					}
+				},
+				{
+					"path": "questions",
+					"style": {
+						"navigationBarTitleText": "常见问题"
+					}
+				},
+				{
+					"path": "contactUs",
+					"style": {
+						"navigationBarTitleText": "联系我们"
+					}
+				},
+				{
+					"path": "aboutUs",
+					"style": {
+						"navigationBarTitleText": "关于我们"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/announcement",
+			"pages": [
+				{
+					"path": "announcementDetail",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/materialLibrary",
+			"pages": [
+				{
+					"path": "materialLibrary",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/edit",
+			"pages": [
+				{
+					"path": "editUserInfo",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/task",
+			"pages": [
+				{
+					"path": "taskDetail",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				}
+			]
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#BFBFBF",
+		"selectedColor": "#1A1A1A",
+		"backgroundColor": "#fff",
+		"borderStyle": "black",
+		"list": [{
+				"text": "首页",
+				"pagePath": "pages/tabbar/index",
+				"iconPath": "/static/tabbarIcon/home.png",
+				"selectedIconPath": "/static/tabbarIcon/selectHome.png"
+			},
+			{
+				"text": "任务",
+				"pagePath": "pages/tabbar/task",
+				"iconPath": "/static/tabbarIcon/task.png",
+				"selectedIconPath": "/static/tabbarIcon/selectTask.png"
+			},
+			{
+				"text": "商学院",
+				"pagePath": "pages/tabbar/businessSchool",
+				"iconPath": "/static/tabbarIcon/businessSchool.png",
+				"selectedIconPath": "/static/tabbarIcon/selectBusinessSchool.png"
+			},
+			{
+				"text": "我的",
+				"pagePath": "pages/tabbar/mine",
+				"iconPath": "/static/tabbarIcon/mine.png",
+				"selectedIconPath": "/static/tabbarIcon/selectMine.png"
+			}
+		]
+	},
+	"uniIdRouter": {}
+}

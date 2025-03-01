@@ -1,0 +1,1 @@
+<tn-picker wx:if="{{f}}" bindclose="{{a}}" bindchange="{{b}}" bindconfirm="{{c}}" bindcancel="{{d}}" u-i="22c9f070-0" bind:__l="__l" bindupdateOpen="{{e}}" u-p="{{f}}"/>

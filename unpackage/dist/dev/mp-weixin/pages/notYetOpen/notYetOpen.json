@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "uv-icon": "../../uni_modules/uv-icon/components/uv-icon/uv-icon",
+    "tn-empty": "../../uni_modules/tuniaoui-vue3/components/empty/src/empty"
+  }
+}

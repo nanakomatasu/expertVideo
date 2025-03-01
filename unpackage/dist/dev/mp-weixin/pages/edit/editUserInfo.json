@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "uv-icon": "../../uni_modules/uv-icon/components/uv-icon/uv-icon",
+    "tn-region-picker": "../../uni_modules/tuniaoui-vue3/components/region-picker/src/region-picker",
+    "tn-picker": "../../uni_modules/tuniaoui-vue3/components/picker/src/picker"
+  }
+}

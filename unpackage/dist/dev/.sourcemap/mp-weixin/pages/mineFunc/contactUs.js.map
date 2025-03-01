@@ -1,0 +1,1 @@
+{"version":3,"file":"contactUs.js","sources":["../../HbuilderX/HBuilderX/plugins/uniapp-cli-vite/uniPage:/cGFnZXNcbWluZUZ1bmNcY29udGFjdFVzLnZ1ZQ"],"sourcesContent":["import MiniProgramPage from 'D:/work/达人h5/pages/mineFunc/contactUs.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;AACA,GAAG,WAAW,eAAe;"}

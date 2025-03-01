@@ -1,0 +1,1 @@
+{"version":3,"file":"questions.js","sources":["../../HbuilderX/HBuilderX/plugins/uniapp-cli-vite/uniPage:/cGFnZXNcbWluZUZ1bmNccXVlc3Rpb25zLnZ1ZQ"],"sourcesContent":["import MiniProgramPage from 'D:/work/达人h5/pages/mineFunc/questions.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;AACA,GAAG,WAAW,eAAe;"}
