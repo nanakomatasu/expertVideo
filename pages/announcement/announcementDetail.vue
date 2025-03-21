@@ -5,11 +5,11 @@
 				<uv-icon name="arrow-left" color="#fff" @click="backPage"></uv-icon>
 			</view>
 		</view>
-		<image src="https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg" mode="aspectFill"
+		<image :src="noticeInfo.img" mode="aspectFill"
 			class="announcement-cover"></image>
 	</view>
 	<view class="announcement-content">
-		<rich-text :nodes="defaultContent"></rich-text>
+		<rich-text :nodes="noticeInfo.content"></rich-text>
 	</view>
 </template>
 
@@ -21,9 +21,14 @@
 		onLoad,
 		onShow
 	} from '@dcloudio/uni-app'
+	import { noticeDetail } from '../../request/api';
+	import { useUserStore } from '../../store/user';
+	const noticeInfo = ref({})
+	const userStore = useUserStore()
 
 	onLoad((options) => {
 		announcementId.value = options.id
+		getNoticeDetail(options.id)
 	})
 
 	const announcementId = ref("")
@@ -31,6 +36,15 @@
 		<p>露从今夜白，月是故乡明</p>
 		<img src="https://cdn.uviewui.com/uview/swiper/2.jpg" />
 	`)
+	const getNoticeDetail = (id) => {
+		noticeDetail({
+			uid:userStore.uid,
+			token:userStore.token,
+			id:id
+		}).then(res => {
+			noticeInfo.value = res.data
+		})
+	}
 	const backPage = () => {
 		uni.navigateBack()
 	}

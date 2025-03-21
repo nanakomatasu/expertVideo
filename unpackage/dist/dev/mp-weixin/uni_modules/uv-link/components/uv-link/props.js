@@ -1,0 +1,2 @@
+"use strict";const r=require("../../../../common/vendor.js");var e,t;const n={props:{color:{type:String,default:""},fontSize:{type:[String,Number],default:14},underLine:{type:Boolean,default:!1},href:{type:String,default:""},mpTips:{type:String,default:"链接已复制，请在浏览器打开"},lineColor:{type:String,default:""},text:{type:String,default:""},...(t=(e=r.index.$uv)==null?void 0:e.props)==null?void 0:t.link}};exports.props=n;
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uv-link/components/uv-link/props.js.map

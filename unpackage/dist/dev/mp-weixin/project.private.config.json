@@ -1,0 +1,15 @@
+{
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/mineFunc/notify",
+          "pathName": "pages/mineFunc/notify",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
+  }
+}

@@ -4,9 +4,9 @@
     "pages/tabbar/task",
     "pages/tabbar/businessSchool",
     "pages/tabbar/mine",
+    "pages/notYetOpen/notYetOpen",
     "pages/account/login",
-    "pages/account/forget",
-    "pages/notYetOpen/notYetOpen"
+    "pages/jinsheng/jinsheng"
   ],
   "subPackages": [
     {
@@ -16,17 +16,28 @@
       ]
     },
     {
+      "root": "pages/agreement",
+      "pages": [
+        "userAgreement",
+        "privacyPolicy"
+      ]
+    },
+    {
+      "root": "pages/teachVideo",
+      "pages": [
+        "teachVideo"
+      ]
+    },
+    {
       "root": "pages/mineFunc",
       "pages": [
-        "announcement",
         "inviteFriends",
         "myTeam",
         "windowAddress",
-        "videoId",
-        "feedback",
         "questions",
-        "contactUs",
-        "aboutUs"
+        "aboutUs",
+        "tuidan",
+        "notify"
       ]
     },
     {
@@ -51,6 +62,12 @@
       "root": "pages/task",
       "pages": [
         "taskDetail"
+      ]
+    },
+    {
+      "root": "pages/video",
+      "pages": [
+        "video"
       ]
     }
   ],

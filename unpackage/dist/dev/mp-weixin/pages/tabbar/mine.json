@@ -3,7 +3,10 @@
   "usingComponents": {
     "uv-icon": "../../uni_modules/uv-icon/components/uv-icon/uv-icon",
     "uv-line-progress": "../../uni_modules/uv-line-progress/components/uv-line-progress/uv-line-progress",
+    "tn-switch-tab": "../../uni_modules/tuniaoui-vue3/components/switch-tab/src/switch-tab",
     "uv-grid-item": "../../uni_modules/uv-grid/components/uv-grid-item/uv-grid-item",
-    "uv-grid": "../../uni_modules/uv-grid/components/uv-grid/uv-grid"
+    "uv-grid": "../../uni_modules/uv-grid/components/uv-grid/uv-grid",
+    "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon",
+    "tn-popup": "../../uni_modules/tuniaoui-vue3/components/popup/src/popup"
   }
 }

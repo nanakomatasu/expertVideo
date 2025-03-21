@@ -1,13 +1,2 @@
-"use strict";
-function fromPairs(pairs) {
-  const result = {};
-  if (pairs == null) {
-    return result;
-  }
-  for (const pair of pairs) {
-    result[pair[0]] = pair[1];
-  }
-  return result;
-}
-exports.fromPairs = fromPairs;
+"use strict";function o(t){const r={};if(t==null)return r;for(const n of t)r[n[0]]=n[1];return r}exports.fromPairs=o;
 //# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/tuniaoui-vue3/libs/lodash/from-pairs.js.map

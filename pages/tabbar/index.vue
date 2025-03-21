@@ -1,52 +1,60 @@
 <template>
 	<view class="content-box">
 		<view class="navigation-bar navigation-bar-background">
-			<view class="navgation-bar-content text-color">
+			<view class="navgation-bar-content">
 				首页
 			</view>
-			<view class="search-box center-box">
+			<!-- 			<view class="search-box center-box">
 				<tn-search-box v-model="searchValue" shape="square" @input="searchInputEvent"
 					@search="searchBtnClickEvent" :border="false" search-button-text-color="#FFFFFF"
 					search-button-bg-color="#FAA82C" />
-			</view>
+			</view> -->
 		</view>
 		<view class="swiper-content center-box">
-			<uv-swiper :list="list" height="304rpx" radius="8rpx"></uv-swiper>
+			<uv-swiper :list="list" height="322rpx" radius="8rpx" imgMode="aspectFill"></uv-swiper>
 		</view>
+		<!-- 		<image src="" mode="aspectFill"></image> -->
 		<view class="notice-content center-box">
-			<tn-notice-bar :data="noticeData" bg-color="#fff" text-color="#BFBFBF" left-icon="sound"
-				left-icon-color="#1DA8FF" left-icon-size="35rpx" />
+			<tn-notice-bar :data="noticeData" bg-color="#fff" text-color="#333" left-icon="sound"
+				left-icon-color="#1DA8FF" left-icon-size="35rpx" @click="navDetail" />
 		</view>
 		<view class="index-func-group center-box">
-			<view class="func-item" v-for="item in indexFuncList" @click="navIndexFunc(item.url)">
-				<image :src="item.icon" mode="aspectFill"></image>
-				<view class="func-item-text">{{item.title}}</view>
+			<view class="func-item" @click="navJinsheng">
+				<image src="/static/index/jinsheng.png" mode="aspectFill"></image>
+				<view class="func-item-text">晋升培训</view>
 			</view>
+			<view class="func-item" @click="navIndexFunc('/pages/materialLibrary/materialLibrary')">
+				<image src="/static/index/sucai.png" mode="aspectFill"></image>
+				<view class="func-item-text">素材动态</view>
+			</view>
+			<button open-type="contact" bindcontact="handleContact" session-from="sessionFrom" class="func-item"
+				style="margin: 0; background-color: transparent; height: 112rpx; margin-top: 30rpx;">
+				<image src="/static/index/jinsheng.png" mode="aspectFill"></image>
+				蚂蚁客服
+			</button>
 		</view>
-		<view class="tips-content center-box">
-			<image src="/static/index/indexTips.png" mode="aspectFit"></image>
-		</view>
-		<view class="video-tutorials center-box">
+		<view class="video-tutorials center-box" v-if="hideStatus != '1'">
 			<tn-title title="视频教程" mode="vLine" assist-color="#FAA82C" size="sm" />
-			<scroll-view scroll-y="true" class="scroll-view">
+			<tn-empty mode="data" v-if="videoTutorialsList.length == 0"></tn-empty>
+			<scroll-view scroll-y="true" class="scroll-view" refresher-enabled="true" @refresherrefresh="handleRefresh"
+				:refresher-triggered="triggered" scrolltolower="handleScrollTolower"
+				v-if="videoTutorialsList.length >0">
 				<view class="video-tutorials-list">
-					<view class="video-tutorials-item" v-for="item in videoTutorialsList" :key="item.id">
+					<view class="video-tutorials-item" v-for="item in videoTutorialsList" :key="item.id"
+						@click="navVideo(item)">
 						<view class="cover-image" style="position: relative;">
 							<view class="play-icon"><uv-icon name="play-circle" size="50rpx" color="#fff"></uv-icon>
 							</view>
 							<image :src="item.cover" mode="aspectFill" style="position: relative; z-index: 1;"></image>
 						</view>
 						<view class="video-tutorials-title">
-							{{item.title}}
+							{{item.name}}
 						</view>
 					</view>
 				</view>
 			</scroll-view>
 		</view>
-		<view class="tips-content center-box">
-			<image src="/static/index/indexTips.png" mode="aspectFit"></image>
-		</view>
-		<view class="live-replay-content center-box">
+		<!-- 		<view class="live-replay-content center-box">
 			<tn-title title="直播回放" mode="vLine" assist-color="#FAA82C" size="sm" />
 			<view class="replay-cover" @click="navNotYetOpen" style="position: relative;">
 				<view class="play-icon">
@@ -55,7 +63,7 @@
 				<image src="https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg" mode="aspectFill">
 				</image>
 			</view>
-		</view>
+		</view> -->
 		<!-- 	<view class="open-video-home" @click="openVide">查看视频号主页</view>
 		<a href="https://mp.weixin.qq.com/s/sph7qekAjBcxbjN" target="_blank"></a> -->
 		<view class="safe-box"></view>
@@ -66,10 +74,33 @@
 	import {
 		ref
 	} from 'vue'
-
-
+	import {
+		dataCenter,
+		teachVideoList,
+		teachVideoDetail,
+		rollingNotice,
+		getTzt,
+		newNotify
+	} from '../../request/api'
+	import {
+		useUserStore
+	} from '../../store/user'
+	import {
+		onLoad,
+		onShow
+	} from "@dcloudio/uni-app"
+	onShow(() => {
+		getData()
+		getClassifyGods()
+		getRollingNotice()
+		getT()
+		getNewNotify()
+	})
+	const userStore = useUserStore()
+	const goodsPage = ref(1)
+	const triggered = ref(false)
 	const searchValue = ref("")
-	const noticeData = ref(['【公告】欢迎来到好物优选平台，我们将竭尽为您服务'])
+	const noticeData = ref([])
 	const indexFuncList = ref([{
 			id: 1,
 			title: "晋升培训",
@@ -89,36 +120,10 @@
 			url: ""
 		}
 	])
-	const videoTutorialsList = ref([{
-			id: 1,
-			title: "新人必刷—生成视频号橱窗专 属海报",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg"
-		},
-		{
-			id: 2,
-			title: "新人必刷—生成视频号橱窗专 属海报",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg"
-		},
-		{
-			id: 3,
-			title: "新人必刷—生成视频号橱窗专 属海报",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg"
-		},
-		{
-			id: 4,
-			title: "新人必刷—生成视频号橱窗专 属海报",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg"
-		},
-		{
-			id: 5,
-			title: "新人必刷—生成视频号橱窗专 属海报新人必刷—生成视频号橱窗专 属海报新人必刷—生成视频号橱窗专 属海报新人必刷—生成视频号橱窗专 属海报",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg"
-		},
-	])
-	const list = [
-		'https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg',
-		'https://wx1.sinaimg.cn/mw690/0040jbadgy1hyl899miduj62q45xc7wk02.jpg',
-	]
+	const hideStatus = ref('1')
+	const videoTutorialsList = ref([])
+	const list = ref([])
+	const noticeDetail = ref({})
 	const searchInputEvent = () => {
 		// eslint-disable-next-line no-console
 		console.log('searchInputEvent', value)
@@ -137,19 +142,135 @@
 			url: '/pages/notYetOpen/notYetOpen'
 		})
 	}
+	const navJinsheng = () => {
+		uni.navigateTo({
+			url: '/pages/jinsheng/jinsheng'
+		})
+	}
+	const navVideo = (item) => {
+		uni.showLoading({
+			title: "加载中"
+		})
+		teachVideoDetail({
+			uid: userStore.uid,
+			token: userStore.token,
+			id: item.id
+		}).then(res => {
+			uni.hideLoading()
+			userStore.setCurrentVideo(res.data.video)
+			uni.navigateTo({
+				url: '/pages/video/video'
+			})
+		})
+	}
+	const getData = () => {
+		dataCenter({
+			content: "SYLBT"
+		}).then(res => {
+			res.data.forEach(i => {
+				list.value.push(i.img)
+			})
+		})
+	}
+	const getClassifyGods = (id) => {
+		teachVideoList({
+			uid: userStore.uid,
+			token: userStore.token,
+			page: goodsPage.value,
+		}).then(res => {
+			if (goodsPage.value > 1) {
+				res.data.forEach(i => {
+					videoTutorialsList.value.push(i)
+				})
+			} else {
+				videoTutorialsList.value = res.data
+			}
+			if (res.data.length == 0) {
+				uni.showToast({
+					icon: 'none',
+					title: '暂无更多内容了'
+				})
+
+			}
+			triggered.value = false
+		})
+	}
+
+	const getT = () => {
+		getTzt().then(res => {
+			hideStatus.value = res.data
+		})
+	}
+
+	const handleRefresh = () => {
+		if (!triggered.value) {
+			triggered.value = true;
+			goodsPage.value = 1
+			getClassifyGodss()
+		}
+	}
+
+	const handleScrollTolower = () => {
+		goodsPage.value++
+		getClassifyGodss()
+	}
+
+	const getRollingNotice = () => {
+		rollingNotice({
+			uid: userStore.uid,
+			token: userStore.token
+		}).then(res => {
+			noticeDetail.value = res.data
+			noticeData.value.push(res.data.name)
+		})
+	}
+
+	const navDetail = (item) => {
+		uni.navigateTo({
+			url: "/pages/announcement/announcementDetail?id=" + noticeDetail.value.id
+		})
+	}
+
+	const getNewNotify = () => {
+		newNotify({
+			uid: userStore.uid,
+			token: userStore.token
+		}).then(res => {
+			if (res.code == 1 && res.data != null) {
+				uni.showModal({
+					title: '系统通知',
+					content: res.data.content,
+					confirmText:'已知晓',
+					cancelText:'取消',
+					success: function(res) {
+						if (res.confirm) {
+							uni.navigateTo({
+								url:'/pages/mineFunc/notify'
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			}
+			console.log(res);
+		})
+	}
 </script>
 
 <style lang="scss" scoped>
 	.navigation-bar {
 		overflow: hidden;
 		width: 100%;
-		height: 440rpx;
+		height: 340rpx;
+
 
 		.navgation-bar-content {
 			margin-top: 88rpx;
 			width: 100%;
 			height: 108rpx;
 			text-align: center;
+			color: #fff;
 		}
 
 		.search-box {
@@ -175,15 +296,22 @@
 		align-items: center;
 
 		.func-item {
+			padding: 0;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+			justify-content: center;
 			font-size: 24rpx !important;
 			color: #4C4C4C;
 
 			image {
 				width: 80rpx;
 				height: 80rpx;
+			}
+
+			.func-item-text {
+				height: 32rpx;
+				margin: 0;
 			}
 		}
 	}

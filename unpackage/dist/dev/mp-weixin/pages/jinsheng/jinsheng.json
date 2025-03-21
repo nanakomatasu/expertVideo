@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "晋升培训",
+  "usingComponents": {
+    "uv-parse": "../../uni_modules/uv-parse/components/uv-parse/uv-parse"
+  }
+}

@@ -1,1 +1,1 @@
-<view class="about-us data-v-cabb9842"><image class="data-v-cabb9842" src="{{a}}" mode="aspectFill"></image></view>
+<view class="data-center-content data-v-cabb9842"><rich-text class="data-v-cabb9842" nodes="{{a}}"></rich-text></view>

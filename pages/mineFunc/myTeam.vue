@@ -11,14 +11,14 @@
 		<view class="card-total">
 			<view class="card-total-item">
 				<view class="card-total-item-title">团队总人数</view>
-				<view class="card-total-item-data">7</view>
+				<view class="card-total-item-data">{{teamInfo.total_number_of_my_team}}</view>
 			</view>
 			<view class="card-total-item">
 				<view class="card-total-item-title">直推总人数</view>
-				<view class="card-total-item-data">0</view>
+				<view class="card-total-item-data">{{teamInfo.total_number_of_my_direct_push}}</view>
 			</view>
 		</view>
-		<view class="card-efficient">
+		<!-- 		<view class="card-efficient">
 			<view class="card-efficient-item">
 				<view class="card-efficient-item-title">团队有效人数</view>
 				<view class="card-efficient-item-data">29</view>
@@ -31,7 +31,7 @@
 				<view class="card-efficient-item-title">直推有效人数</view>
 				<view class="card-efficient-item-data">1</view>
 			</view>
-		</view>
+		</view> -->
 	</view>
 	<view class="switch-tabs center-box">
 		<view class="switch-tab-item" v-for="item in switchTabsList" :key="item.id"
@@ -40,26 +40,43 @@
 	</view>
 	<scroll-view scroll-y="true" class="scroll-view center-box">
 		<view class="team-user">
-			<view class="team-user-info-item">
+			<view class="team-user-info-item" v-for="item in teamList">
 				<view class="first-line">
 					<view class="user-avatar">
-						<image src="https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg" mode="">
+						<image :src="item.headimg" mode="">
 						</image>
 					</view>
 					<view class="user-info">
-						<view class="user-nick">用户名1</view>
-						<view class="join-time">2025-1-23-12:12</view>
+						<view class="user-nick">
+							{{item.nickname}}
+							<span style="margin-left: 15rpx;">{{item.phone}}</span>
+							<view class="user-status" v-if="item.light_status == 3">
+								<image src="/static/team/red.png" mode=""></image>
+							</view>
+							<view class="user-status" v-if="item.light_status == 2">
+								<image src="/static/team/green.png" mode=""></image>
+							</view>
+							<view class="user-status" v-if="item.light_status == 1">
+								<image src="/static/team/yellow.png" mode=""></image>
+							</view>
+							<view class="zhitui-user" style="margin-left: 20rpx;" v-if="selectTabId == 1">由{{item.pid_user.nickname}}直推</view>
+						</view>
+						<view class="join-time">{{item.create_at}}</view>
 					</view>
-					<view class="user-level">普通用户</view>
+					<view class="user-level" v-if="item.ievel == 0">普通用户</view>
+					<view class="user-level" v-if="item.ievel == 1">创客</view>
+					<view class="user-level" v-if="item.ievel == 2">推客</view>
+					<view class="user-level" v-if="item.ievel == 3">团长</view>
+					<view class="user-level" v-if="item.ievel == 4">服务商</view>
 				</view>
 				<view class="second-line">
 					<view class="second-line-item">
-						<view class="second-line-item-title">直推总人数</view>
-						<view class="second-line-item-data">22</view>
+						<view class="second-line-item-title">团队总人数</view>
+						<view class="second-line-item-data">{{item.total_number_of_my_team}}</view>
 					</view>
 					<view class="second-line-item">
-						<view class="second-line-item-title">直推有效人数</view>
-						<view class="second-line-item-data">23</view>
+						<view class="second-line-item-title">直推总人数</view>
+						<view class="second-line-item-data">{{item.total_number_of_my_direct_push}}</view>
 					</view>
 				</view>
 			</view>
@@ -71,35 +88,64 @@
 	import {
 		ref
 	} from 'vue';
-
+	import {
+		myteamApi
+	} from '../../request/api';
+	import {
+		useUserStore
+	} from '../../store/user';
+	import {
+		onLoad,
+		onShow
+	} from "@dcloudio/uni-app"
+	const userStore = useUserStore()
 	const selectTabId = ref(1)
 	const switchTabsList = [{
 			id: 1,
-			title: "全部"
+			title: "团队"
 		},
 		{
 			id: 2,
 			title: "直推"
-		},
-		{
-			id: 3,
-			title: "间推"
 		}
+		// {
+		// 	id: 3,
+		// 	title: "间推"
+		// }
 	]
+	const teamList = ref([])
+	const teamInfo = ref({})
+	onLoad(() => {
+		getTeamList()
+	})
 
 	const changeTabId = (id) => {
 		selectTabId.value = id
+		getTeamList()
 	}
 
 
 	const backPages = () => {
 		uni.navigateBack()
 	}
+
+	const getTeamList = () => {
+		myteamApi({
+			uid: userStore.uid,
+			token: userStore.token,
+			type: selectTabId.value
+		}).then(res => {
+			teamInfo.value = res.data
+			teamList.value = res.data.array
+			console.log(teamList.value);
+		})
+	}
 </script>
 
 <style lang="scss" scoped>
 	page {
 		background: linear-gradient(180deg, #E4DFD9 0%, #E7DBCD 36%, #E4D8C8 67%, #DDCAB0 100%);
+		background-size: cover;
 	}
 
 	.navigation-bar {
@@ -123,7 +169,7 @@
 
 	.team-card {
 		box-sizing: border-box;
-		height: 348rpx;
+		// height: 348rpx;
 		border-radius: 8rpx 8rpx 8rpx 8rpx;
 		background: linear-gradient(270deg, #D9B97E 3%, #D9B97E 18%, #DFBE80 39%, #DCB375 62%, #BD954F 100%);
 		color: #fff;
@@ -183,10 +229,10 @@
 	.switch-tabs {
 		margin-top: 32rpx;
 		display: flex;
-		justify-content: space-between;
 		align-items: center;
 
 		.switch-tab-item {
+			margin-right: 20rpx;
 			padding: 14rpx 78rpx;
 			border-radius: 60rpx 60rpx 60rpx 60rpx;
 			border: 2rpx solid #FAA82C;
@@ -238,6 +284,19 @@
 
 						.user-nick {
 							color: #1A1A1A;
+							display: flex;
+							align-items: center;
+
+							.user-status {
+								margin-left: 30rpx;
+								width: 30rpx;
+								height: 30rpx;
+
+								image {
+									width: 100%;
+									height: 100%;
+								}
+							}
 						}
 
 						.join-time {

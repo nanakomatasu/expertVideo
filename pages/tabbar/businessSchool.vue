@@ -7,9 +7,8 @@
 		</view>
 		<view class="search-box center-box">
 			<view class="search-content">
-				<tn-search-box v-model="searchValue" shape="square" @input="searchInputEvent"
-					@search="searchBtnClickEvent" :border="false" search-button-text-color="#FFFFFF"
-					search-button-bg-color="#FAA82C" />
+				<tn-search-box v-model="searchValue" shape="square" @search="searchBtnClickEvent" :border="false"
+					search-button-text-color="#FFFFFF" search-button-bg-color="#FAA82C" />
 			</view>
 		</view>
 		<view class="switch-tab-content">
@@ -19,16 +18,17 @@
 			</view>
 		</view>
 		<view class="course-list">
-			<scroll-view scroll-y="true" class="scroll-view">
-				<view class="course-item" v-for="item in courseList" :key="item.id" @click="navCourseDetail(item)">
-					<view class="course-cover">
-						<view class="play-icon"><uv-icon name="play-circle" class="play-icon" size="50rpx" color="#fff"
-								v-if="switchId == 2"></uv-icon></view>
-						<image :src="item.cover" mode="aspectFill"></image>
-					</view>
-					<view class="course-info">
-						<view class="course-title">{{item.title}}</view>
-						<view class="course-introduction">{{item.introduction}}</view>
+			<tn-empty mode="data" v-if="courseList.length == 0"></tn-empty>
+			<scroll-view scroll-y="true" class="scroll-view" refresher-enabled="true" @refresherrefresh="handleRefresh"
+				:refresher-triggered="triggered" scrolltolower="handleScrollTolower" v-if="courseList.length > 0">
+				<view class="course-item-content">
+					<view class="course-item" v-for="item in courseList" :key="item.id" @click="navCourseDetail(item)">
+						<view class="course-cover">
+							<view class="play-icon" v-if="hideStatus != '1'"><uv-icon name="play-circle"
+									class="play-icon" size="50rpx" color="#fff" v-if="switchId == 2"></uv-icon></view>
+							<image :src="item.cover" mode="aspectFill"></image>
+						</view>
+						<view class="course-title">{{item.name}}</view>
 					</view>
 				</view>
 			</scroll-view>
@@ -40,59 +40,151 @@
 	import {
 		ref
 	} from 'vue'
-	const switchId = ref(1)
-	const switchList = ref([{
-			id: 1,
-			title: "图文"
-		},
-		{
-			id: 2,
-			title: "视频"
+	import {
+		useUserStore
+	} from '../../store/user'
+	import {
+		BusinessCollegeApi,
+		getTzt
+	} from '../../request/api'
+	import {
+		onLoad,
+		onShow
+	} from '@dcloudio/uni-app'
+	onShow(() => {
+		getT()
+		if (userStore.token == "") {
+			uni.showModal({
+				title: '请先去登陆吧',
+				success(res) {
+					if (res.confirm) {
+						uni.navigateTo({
+							url: "/pages/account/login"
+						})
+					}
+
+				}
+			})
+
 		}
-	])
-	const courseList = ref([{
-			id: 1,
-			title: "高等数学",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-			introduction: "高等数学是一门基础学科，广泛应用于科学、工程、经济等多个领域。它主要涵盖了微积分、线性代数、概率论与数理统计等核心内容"
-		},
-		{
-			id: 2,
-			title: "高等数学",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-			introduction: "高等数学是一门基础学科，广泛应用于科学、工程、经济等多个领域。它主要涵盖了微积分、线性代数、概率论与数理统计等核心内容"
-		},
-		{
-			id: 3,
-			title: "高等数学",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-			introduction: "高等数学是一门基础学科，广泛应用于科学、工程、经济等多个领域。它主要涵盖了微积分、线性代数、概率论与数理统计等核心内容"
-		},
-		{
-			id: 4,
-			title: "高等数学",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-			introduction: "高等数学是一门基础学科，广泛应用于科学、工程、经济等多个领域。它主要涵盖了微积分、线性代数、概率论与数理统计等核心内容"
-		},
-		{
-			id: 5,
-			title: "高等数学",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-			introduction: "高等数学是一门基础学科，广泛应用于科学、工程、经济等多个领域。它主要涵盖了微积分、线性代数、概率论与数理统计等核心内容"
-		},
-		{
-			id: 6,
-			title: "高等数学",
-			cover: "https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-			introduction: "高等数学是一门基础学科，广泛应用于科学、工程、经济等多个领域。它主要涵盖了微积分、线性代数、概率论与数理统计等核心内容"
-		},
-	])
+		getClassifyGods()
+	})
+	const hideStatus = ref('1')
+	const userStore = useUserStore()
+	const switchId = ref(1)
+	const goodsPage = ref(1)
+	const triggered = ref(false)
+	const switchList = ref([])
+	const courseList = ref([])
 	const changeSwitchId = (item) => {
 		switchId.value = item.id
+		getClassifyGods()
+	}
+
+	const searchBtnClickEvent = (value) => {
+		// eslint-disable-next-line no-console
+		console.log('searchBtnClickEvent', value)
+		BusinessCollegeApi({
+			uid: userStore.uid,
+			token: userStore.token,
+			type: switchId.value,
+			page: goodsPage.value,
+			name: value
+		}).then(res => {
+			goodsPage.value == 1
+			courseList.value = res.data
+			triggered.value = false
+		})
 	}
 	const navCourseDetail = (item) => {
 		uni.navigateTo({
 			url: "/pages/course/courseDetail?id=" + item.id + "&type=" + switchId.value
+		})
+	}
+	const getClassifyGods = () => {
+		BusinessCollegeApi({
+			uid: userStore.uid,
+			token: userStore.token,
+			type: switchId.value,
+			page: goodsPage.value,
+		}).then(res => {
+			if (goodsPage.value > 1) {
+				res.data.forEach(i => {
+					courseList.value.push(i)
+				})
+			} else {
+				courseList.value = res.data
+			}
+			if (res.data.length == 0) {
+				uni.showToast({
+					icon: 'none',
+					title: '暂无更多内容了'
+				})
+
+			}
+			triggered.value = false
+		})
+	}
+
+	const handleRefresh = () => {
+		if (!triggered.value) {
+			triggered.value = true;
+			goodsPage.value = 1
+			getClassifyGodss()
+		}
+	}
+
+	const handleScrollTolower = () => {
+		goodsPage.value++
+		getClassifyGodss()
+	}
+
+	const getT = () => {
+		getTzt().then(res => {
+			hideStatus.value = res.data
+			console.log(res);
+			if (res.data !== '1') {
+				switchList.value = [{
+						id: 1,
+						title: "图文"
+					},
+					{
+						id: 2,
+						title: "视频"
+					}
+				]
+			} else {
+				switchList.value = [{
+						id: 1,
+						title: "图文"
+					},
+					{
+						id: 2,
+						title: "教程"
+					}
+				]
+			}
+			// if (res.data.content != '1') {
+			// 	console.log('111');
+			// 	switchList.value = []
+			// 	switchList.value.push({
+			// 		id: 1,
+			// 		title: "图文"
+			// 	})
+			// 	switchList.value.push({
+			// 		id: 2,
+			// 		title: "视频"
+			// 	})
+			// 	// switchList.value = [{
+			// 	// 		id: 1,
+			// 	// 		title: "图文"
+			// 	// 	},
+			// 	// 	{
+			// 	// 		id: 2,
+			// 	// 		title: "视频"
+			// 	// 	}
+			// 	// ]
+			// }
 		})
 	}
 </script>
@@ -116,9 +208,11 @@
 	}
 
 	.search-box {
-		padding: 8rpx 20rpx;
-		width: 100%;
+		margin-top: 8rpx;
+		padding: 8rpx 0;
+		width: calc(100% - 64rpx);
 		background-color: #fff;
+		border-radius: 8rpx 8rpx 8rpx 8rpx;
 
 		.search-content {
 			width: 100%;
@@ -128,14 +222,16 @@
 
 	.switch-tab-content {
 		box-sizing: border-box;
-		width: 100%;
+		width: calc(100% - 64rpx);
 		height: 104rpx;
 		background-color: #fff;
-		margin: 8rpx 0 0 0;
-		padding: 10rpx 32rpx;
+		margin: 8rpx 0 0 50%;
+		transform: translateX(-50%);
+		padding: 10rpx 16rpx;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		border-radius: 8rpx;
 
 		.switch-item {
 			cursor: pointer;
@@ -156,60 +252,54 @@
 	}
 
 	.course-list {
-		width: 100%;
+		width: calc(100% - 64rpx);
 		height: 70vh;
 		background-color: #fff;
-		margin-top: 16rpx;
+		margin: 16rpx 0 0 50%;
+		transform: translateX(-50%);
+		border-radius: 8rpx;
 
 		.scroll-view {
 			width: 100%;
 			height: 100%;
 
-			.course-item {
+			.course-item-content {
 				width: 100%;
-				padding: 24rpx 32rpx;
+				height: 100%;
 				display: flex;
+				flex-wrap: wrap;
 				justify-content: space-between;
+				align-content: flex-start;
 
-				.course-cover {
-					position: relative;
-					width: 120rpx;
-					height: 120rpx;
-					border-radius: 8rpx 8rpx 8rpx 8rpx;
-					background-color: red;
+				.course-item {
+					width: 49%;
+					padding: 12rpx 12rpx;
 
-					.play-icon {
-						position: absolute;
-						left: 50%;
-						top: 50%;
-						transform: translate(-50%, -50%);
-						z-index: 2;
-					}
-
-					image {
+					.course-cover {
 						width: 100%;
-						height: 100%;
-					}
-				}
+						position: relative;
+						height: 374rpx;
+						border-radius: 8rpx 8rpx 8rpx 8rpx;
 
-				.course-info {
-					width: calc(100% - 120rpx - 24rpx);
-					height: 120rpx;
+						.play-icon {
+							position: absolute;
+							left: 50%;
+							top: 50%;
+							transform: translate(-50%, -50%);
+							z-index: 2;
+						}
+
+						image {
+							width: 100%;
+							height: 100%;
+						}
+					}
 
 					.course-title {
+						width: 100%;
+						padding: 0 8rpx;
 						font-size: 28rpx;
 						color: #1A1A1A;
-					}
-
-					.course-introduction {
-						margin-top: 12rpx;
-						font-size: 24rpx;
-						color: #4C4C4C;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						display: -webkit-box;
-						-webkit-line-clamp: 2;
-						-webkit-box-orient: vertical;
 					}
 				}
 			}

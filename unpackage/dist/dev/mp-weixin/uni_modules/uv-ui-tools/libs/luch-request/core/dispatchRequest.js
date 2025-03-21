@@ -1,7 +1,2 @@
-"use strict";
-const uni_modules_uvUiTools_libs_luchRequest_adapters_index = require("../adapters/index.js");
-const dispatchRequest = (config) => {
-  return uni_modules_uvUiTools_libs_luchRequest_adapters_index.adapter(config);
-};
-exports.dispatchRequest = dispatchRequest;
+"use strict";const s=require("../adapters/index.js"),t=e=>s.adapter(e);exports.dispatchRequest=t;
 //# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uv-ui-tools/libs/luch-request/core/dispatchRequest.js.map

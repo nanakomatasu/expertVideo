@@ -1,0 +1,2 @@
+"use strict";const e=require("../../common/vendor.js"),a=require("../../request/api.js"),o=require("../../store/user.js"),s={__name:"userAgreement",setup(_){e.onLoad(()=>{n()}),o.useUserStore();const t=e.ref(""),n=()=>{a.dataCenter({content:"YHXY"}).then(r=>{t.value=r.data.content})};return(r,u)=>({a:t.value})}},c=e._export_sfc(s,[["__scopeId","data-v-e920eec0"]]);wx.createPage(c);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/agreement/userAgreement.js.map

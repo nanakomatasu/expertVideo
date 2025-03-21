@@ -5,7 +5,7 @@
 			"^tn-(.*)": "@/uni_modules/tuniaoui-vue3/components/$1/src/$1.vue"
 		}
 	},
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages\
 		{
 			"path": "pages/tabbar/index",
 			"style": {
@@ -31,21 +31,21 @@
 			}
 		},
 		{
+			"path": "pages/notYetOpen/notYetOpen",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/account/login",
 			"style": {
 				"navigationBarTitleText": "登录"
 			}
 		},
 		{
-			"path": "pages/account/forget",
+			"path": "pages/jinsheng/jinsheng",
 			"style": {
-				"navigationBarTitleText": "找回密码"
-			}
-		},
-		{
-			"path": "pages/notYetOpen/notYetOpen",
-			"style": {
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "晋升培训"
 			}
 		}
 	],
@@ -54,19 +54,39 @@
 			"pages": [{
 				"path": "courseDetail",
 				"style": {
-					"navigationBarTitleText": "图文"
+					"navigationBarTitleText": ""
 				}
 			}]
 		},
 		{
-			"root": "pages/mineFunc",
+			"root": "pages/agreement",
 			"pages": [{
-					"path": "announcement",
+					"path": "userAgreement",
 					"style": {
-						"navigationStyle": "custom"
+						"navigationBarTitleText": "用户协议"
 					}
 				},
 				{
+					"path": "privacyPolicy",
+					"style": {
+						"navigationBarTitleText": "隐私政策"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/teachVideo",
+			"pages": [{
+				"path": "teachVideo",
+				"style": {
+					"navigationBarTitleText": "图文教学"
+				}
+			}]
+
+		},
+		{
+			"root": "pages/mineFunc",
+			"pages": [{
 					"path": "inviteFriends",
 					"style": {
 						"navigationStyle": "custom"
@@ -85,27 +105,9 @@
 					}
 				},
 				{
-					"path": "videoId",
-					"style": {
-						"navigationStyle": "custom"
-					}
-				},
-				{
-					"path": "feedback",
-					"style": {
-						"navigationBarTitleText": "建议与反馈"
-					}
-				},
-				{
 					"path": "questions",
 					"style": {
 						"navigationBarTitleText": "常见问题"
-					}
-				},
-				{
-					"path": "contactUs",
-					"style": {
-						"navigationBarTitleText": "联系我们"
 					}
 				},
 				{
@@ -113,52 +115,65 @@
 					"style": {
 						"navigationBarTitleText": "关于我们"
 					}
+				},
+				{
+					"path": "tuidan",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "notify",
+					"style": {
+						"navigationStyle": "custom"
+					}
 				}
 			]
 		},
 		{
 			"root": "pages/announcement",
-			"pages": [
-				{
-					"path": "announcementDetail",
-					"style": {
-						"navigationStyle": "custom"
-					}
+			"pages": [{
+				"path": "announcementDetail",
+				"style": {
+					"navigationStyle": "custom"
 				}
-			]
+			}]
 		},
 		{
 			"root": "pages/materialLibrary",
-			"pages": [
-				{
-					"path": "materialLibrary",
-					"style": {
-						"navigationStyle": "custom"
-					}
+			"pages": [{
+				"path": "materialLibrary",
+				"style": {
+					"navigationStyle": "custom"
 				}
-			]
+			}]
 		},
 		{
 			"root": "pages/edit",
-			"pages": [
-				{
-					"path": "editUserInfo",
-					"style": {
-						"navigationStyle": "custom"
-					}
+			"pages": [{
+				"path": "editUserInfo",
+				"style": {
+					"navigationStyle": "custom"
 				}
-			]
+			}]
 		},
 		{
 			"root": "pages/task",
-			"pages": [
-				{
-					"path": "taskDetail",
-					"style": {
-						"navigationStyle": "custom"
-					}
+			"pages": [{
+				"path": "taskDetail",
+				"style": {
+					"navigationStyle": "custom"
 				}
-			]
+			}]
+		},
+		{
+			"root": "pages/video",
+			"pages": [{
+				"path": "video",
+				"style": {
+					"navigationBarTitleText": ""
+				}
+			}]
 		}
 	],
 	"globalStyle": {

@@ -23,31 +23,25 @@
 				<input type="text" v-model="nick" placeholder="请输入昵称" />
 			</view>
 		</view>
-		<view class="user-gender content-item">
+		<!-- 		<view class="user-gender content-item">
 			<view class="content-item-title">性别</view>
 			<view class="content-item-main" style="display: flex; justify-content: space-between;"
 				@click="openGenderPicker">{{pickerValue}}<uv-icon name="arrow-down-fill"></uv-icon></view>
-		</view>
+		</view> -->
 		<view class="user-region content-item">
 			<view class="content-item-title">地区</view>
 			<view class="content-item-main" style="display: flex; justify-content: space-between;" @click="openRegion">
 				{{regionValue[0]}} {{regionValue[1]}} {{regionValue[2]}}<uv-icon name="arrow-down-fill"></uv-icon>
 			</view>
 		</view>
-		<view class="user-phone content-item">
-			<view class="content-item-title">手机号</view>
-			<view class="content-item-main">
-				<input type="text" v-model="phone" placeholder="请输入手机号" />
-			</view>
-		</view>
-		<view class="user-invite-id content-item">
+		<!-- 		<view class="user-invite-id content-item">
 			<view class="content-item-title">推荐ID</view>
 			<view class="content-item-main">
 				<input type="text" v-model="inviteCode" placeholder="请输入推荐ID" />
 			</view>
-		</view>
+		</view> -->
 	</view>
-	<view class="save-btn">
+	<view class="save-btn" @click="editUserInfo">
 		完成编辑
 	</view>
 	<tn-region-picker v-model="regionValue" v-model:open="openRegionPicker" />
@@ -60,7 +54,36 @@
 		ref
 	} from 'vue';
 
-	const avatar = ref("https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg")
+	import {
+		onShow,
+		onLoad
+	} from '@dcloudio/uni-app'
+
+	import {
+		SERVERTAPI
+	} from '../../config';
+
+	import {
+		useUserStore
+	} from '../../store/user';
+
+	import {
+		changeUserInfoApi,
+		userInfoApi,
+		telnumberApi
+	} from '../../request/api';
+
+	const userStore = useUserStore()
+
+	onLoad(() => {
+		getUserInfo()
+	})
+
+	import {
+		upload
+	} from '../../request/api'
+
+	const avatar = ref("")
 
 	const openRegionPicker = ref(false)
 
@@ -70,36 +93,41 @@
 
 	const regionValue = ref(['河南省', '郑州市', '金水区'])
 
-	const pickerData = ['男', '女']
+	// const pickerData = ['男', '女']
 
 	const nick = ref("")
-
-	const phone = ref("")
 
 	const inviteCode = ref("")
 
 	const uploadAvatar = () => {
-		// 项目实战中使用
 		uni.chooseImage({
-			count: 1, // 图片数量
-			sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-			sourceType: ['album', 'camera'], //从相册选择或者拍照
+			count: 1,
+			sizeType: ['original', 'compressed'],
+			sourceType: ['album', 'camera'],
 			success: (res) => {
-				const tempFilePaths = res.tempFilePaths;
-				console.log(tempFilePaths[0])
+				const tempFilePaths = res.tempFilePaths[0];
 				uni.uploadFile({
-					url: 'https://xx.com/center/group/icon', //上传图片api
-					filePath: tempFilePaths[0],
-					name: 'groupicon',
-					header: {
-						"Authorization": "token"
+					url: SERVERTAPI + upload,
+					filePath: tempFilePaths,
+					name: 'file',
+					formData: {
+						'uid': userStore.uid,
+						'token': userStore.token
 					},
-					success: (res) => {
-						let group = JSON.parse(res.data)
+					success: (uploadRes) => {
+						const res = JSON.parse(uploadRes.data)
+						if (res.code != 1) {
+							uni.showToast({
+								icon: 'none',
+								title: res.info
+							})
+							return
+						}
 						uni.showToast({
-							title: "上传成功",
-							icon: "success"
+							icon: 'success',
+							title: '上传成功'
 						})
+						avatar.value = res.data.urlImg
 					}
 				});
 			}
@@ -116,6 +144,86 @@
 
 	const openGenderPicker = () => {
 		openPicker.value = true
+	}
+
+	const editUserInfo = () => {
+		changeUserInfoApi({
+			uid: userStore.uid,
+			token: userStore.token,
+			nickname: nick.value,
+			headimg: avatar.value,
+			region_province: regionValue.value[0],
+			region_city: regionValue.value[1],
+			region_area: regionValue.value[2]
+		}).then(res => {
+			if (res.code == 1) {
+				uni.showToast({
+					icon: 'success',
+					title: '修改成功'
+				})
+				setTimeout(() => {
+					uni.navigateBack()
+				}, 500)
+			}
+		})
+	}
+
+	const getUserInfo = () => {
+		userInfoApi({
+			uid: userStore.uid,
+			token: userStore.token
+		}).then(res => {
+			nick.value = res.data.nickname
+			avatar.value = res.data.headimg
+			if (res.data.region_province != "") {
+				regionValue.value[0] = res.data.region_province
+				regionValue.value[1] = res.data.region_city
+				regionValue.value[2] = res.data.region_area
+			}
+		})
+	}
+
+	const getPhoneNumber = (e) => {
+		if (e.detail.errMsg === 'getPhoneNumber:ok') {
+			const encryptedData = e.detail.encryptedData;
+			const iv = e.detail.iv;
+			uni.login({
+				success: (loginRes) => {
+					if (loginRes.code) {
+						telnumberApi({
+							uid:userStore.uid,
+							code:loginRes.code,
+							encryptedData:encryptedData,
+							iv:iv
+						}).then(res => {
+							phone.value = res.data
+						})
+					} else {
+						// 获取登录凭证失败
+						console.error('获取登录凭证失败：', loginRes.errMsg);
+						uni.showToast({
+							title: '获取登录凭证失败，请稍后重试',
+							icon: 'none'
+						});
+					}
+				},
+				fail: (err) => {
+					// 登录失败
+					console.error('登录失败：', err);
+					uni.showToast({
+						title: '登录失败，请检查网络',
+						icon: 'none'
+					});
+				}
+			});
+		} else {
+			// 用户拒绝授权
+			console.log('用户拒绝授权获取手机号');
+			uni.showToast({
+				title: '你拒绝了授权，无法获取手机号',
+				icon: 'none'
+			});
+		}
 	}
 </script>
 
@@ -154,7 +262,6 @@
 		height: 168rpx;
 		border-radius: 50%;
 		margin: 48rpx 0 0 64rpx;
-		background-color: red;
 
 		.change-avatar {
 			z-index: 1;
@@ -199,6 +306,19 @@
 				height: 88rpx;
 				background: #F6F6F6;
 				border-radius: 8rpx 8rpx 8rpx 8rpx;
+				
+				button {
+					padding: 0;
+					box-sizing: border-box;
+					width: 500rpx;
+					height: 88rpx;
+					line-height: 88rpx;
+					background: #F6F6F6;
+					border-radius: 8rpx 8rpx 8rpx 8rpx;
+					text-align: left;
+					padding-left: 24rpx;
+					font-size: 28rpx;
+				}
 
 				.content-item-input {}
 			}

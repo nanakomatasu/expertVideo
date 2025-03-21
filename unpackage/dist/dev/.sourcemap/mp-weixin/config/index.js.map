@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sources":["config/index.js"],"sourcesContent":["const APPNAME = \"创客\"; //\r\nconst SERVERTAPI = \"https://csexpert.12d3.cn/\"; // 线上环境\r\nconst LOGO_URL = SERVERTAPI + \"/static/logo.png\";\r\n\r\nexport {\r\n\tAPPNAME,\r\n\tSERVERTAPI,\r\n\tLOGO_URL\r\n};"],"names":["SERVERTAPI"],"mappings":"aACK,MAACA,EAAa"}

@@ -1,9 +1,2 @@
-"use strict";
-const common_vendor = require("../../common/vendor.js");
-const _sfc_main = {};
-function _sfc_render(_ctx, _cache) {
-  return {};
-}
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-10aeaccf"]]);
-wx.createPage(MiniProgramPage);
+"use strict";const e=require("../../common/vendor.js"),n=require("../../request/api.js"),o=require("../../store/user.js"),s={__name:"questions",setup(_){e.onLoad(()=>{r()}),o.useUserStore();const t=e.ref(""),r=()=>{n.dataCenter({content:"CJWT"}).then(a=>{t.value=a.data.content})};return(a,u)=>({a:t.value})}},c=e._export_sfc(s,[["__scopeId","data-v-10aeaccf"]]);wx.createPage(c);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/mineFunc/questions.js.map

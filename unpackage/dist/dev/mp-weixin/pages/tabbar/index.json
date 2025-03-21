@@ -1,10 +1,10 @@
 {
   "navigationStyle": "custom",
   "usingComponents": {
-    "tn-search-box": "../../uni_modules/tuniaoui-vue3/components/search-box/src/search-box",
     "uv-swiper": "../../uni_modules/uv-swiper/components/uv-swiper/uv-swiper",
     "tn-notice-bar": "../../uni_modules/tuniaoui-vue3/components/notice-bar/src/notice-bar",
     "tn-title": "../../uni_modules/tuniaoui-vue3/components/title/src/title",
+    "tn-empty": "../../uni_modules/tuniaoui-vue3/components/empty/src/empty",
     "uv-icon": "../../uni_modules/uv-icon/components/uv-icon/uv-icon"
   }
 }

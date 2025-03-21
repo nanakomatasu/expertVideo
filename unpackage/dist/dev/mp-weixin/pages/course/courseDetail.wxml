@@ -1,1 +1,1 @@
-<view class="course-cover"><image wx:if="{{a}}" src="https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg" mode="aspectFill"></image><video wx:if="{{b}}" src="{{''}}"></video></view><view class="course-detail"><rich-text nodes="{{c}}"></rich-text></view>
+<view class="course-cover"><image wx:if="{{a}}" src="{{b}}" mode="aspectFill"></image><video wx:if="{{c}}" src="{{d}}"></video></view><view class="course-detail"><rich-text nodes="{{e}}"></rich-text></view>

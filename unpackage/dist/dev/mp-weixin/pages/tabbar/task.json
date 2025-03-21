@@ -2,6 +2,8 @@
   "navigationStyle": "custom",
   "usingComponents": {
     "uv-line-progress": "../../uni_modules/uv-line-progress/components/uv-line-progress/uv-line-progress",
+    "tn-empty": "../../uni_modules/tuniaoui-vue3/components/empty/src/empty",
+    "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon",
     "tn-popup": "../../uni_modules/tuniaoui-vue3/components/popup/src/popup"
   }
 }

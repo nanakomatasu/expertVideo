@@ -3,6 +3,7 @@
   "usingComponents": {
     "uv-icon": "../../uni_modules/uv-icon/components/uv-icon/uv-icon",
     "uv-tabs": "../../uni_modules/uv-tabs/components/uv-tabs/uv-tabs",
+    "tn-empty": "../../uni_modules/tuniaoui-vue3/components/empty/src/empty",
     "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon"
   }
 }

@@ -16,23 +16,62 @@ export const request = (options = {}) => {
 		}
 
 		uni.request({
-			url: SERVERTAPI + options.url, 
-			method: options.method || 'GET', 
-			data: options.data || {}, 
-			timeout: 100000, 
-			header: header, 
+			url: SERVERTAPI + options.url,
+			method: options.method || 'GET',
+			data: options.data || {},
+			timeout: 100000,
+			header: header,
 			success: (res) => {
 				if (res.statusCode === 200) {
-					resolve(res.data); 
-				} else {
-					if (res.statusCode === 401) {
+					if (res.data.code == 300) {
+						uni.showModal({
+							title: '请先去登陆吧',
+							success(res) {
+								if (res.confirm) {
+									uni.navigateTo({
+										url: "/pages/account/login"
+									})
+								}
+
+							}
+						})
+						return
+					}
+					if (res.data.code == 100) {
+						uni.showModal({
+							title: '请先去登陆吧',
+							success(res) {
+								if (res.confirm) {
+									uni.navigateTo({
+										url: "/pages/account/login"
+									})
+								}
+
+							}
+						})
+						return
+					}
+					if (res.code == 0) {
 						uni.showToast({
 							icon: 'none',
-							title: '登录已过期，请重新登录',
-						});
-						uni.navigateTo({
-							url: '/pages/login/login',
-						});
+							title: res.info
+						})
+						return
+					}
+					resolve(res.data);
+				} else {
+					if (res.statusCode === 401) {
+						uni.showModal({
+							title: '请先去登陆吧',
+							success(res) {
+								if (res.confirm) {
+									uni.navigateTo({
+										url: "/pages/account/login"
+									})
+								}
+
+							}
+						})
 					} else {
 						uni.showToast({
 							icon: 'none',

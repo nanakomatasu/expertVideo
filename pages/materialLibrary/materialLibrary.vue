@@ -12,7 +12,7 @@
 				:class="[item.id == leftTabsId ? 'select-material-content-left-item' : '']"
 				@click="changeLeftTabsId(item.id)">
 				<view class="left-line" v-if="item.id == leftTabsId"></view>
-				{{item.title}}
+				{{item.name}}
 			</view>
 		</view>
 		<view class="material-content-right">
@@ -20,26 +20,33 @@
 				<uv-tabs :list="tabsData" @click="click" activeStyle="color: #FAA82C" lineColor="#FAA82C"></uv-tabs>
 			</view>
 			<view class="material-content-right-tabs-main">
-				<scroll-view scroll-y="true" class="scroll-view">
+				<tn-empty mode="data" v-if="list.length == 0"></tn-empty>
+				<scroll-view scroll-y="true" class="scroll-view" refresher-enabled="true"
+					@refresherrefresh="handleRefresh" :refresher-triggered="triggered"
+					scrolltolower="handleScrollTolower" v-if="list.length >0">
 					<view class="image-content" v-if="leftTabsId == 1">
-						<view class="image-item" v-for="item in imageList">
-							<image :src="item" mode="aspectFill"></image>
+						<view class="image-item" v-for="item in list">
+							<view class="download-icon" @click="posterSure(item)">
+								<tn-icon name="download" color="#FAA82C" size="50rpx"></tn-icon>
+							</view>
+							<image :src="item.cover" mode="aspectFill" @click="previewSingleImage(item.cover)"></image>
 						</view>
+						<view class="image-item" style="text-align: center; line-height: 440rpx; font-size: 28rpx;">没有更多了..</view>
 					</view>
-					<view class="text-item" v-for="(item, index) in textList" v-if="leftTabsId == 2">
+					<view class="text-item" v-for="(item, index) in list" v-if="leftTabsId == 2">
 						<view class="serial-number">{{index + 1}}</view>
-						<view class="text-content">{{ item.content }}</view>
+						<view class="text-content">{{ item.remarks }}</view>
 						<tn-icon name="copy-fill" color="#FAA82C" size="60rpx" style="position: absolute; right: 0;"
-							@click="copy(item.content)"></tn-icon>
+							@click="copy(item.remarks)"></tn-icon>
 					</view>
-					<view class="music-item" v-for="(item, index) in musicList" v-if="leftTabsId == 3">
+					<view class="music-item" v-for="(item, index) in list" v-if="leftTabsId == 3">
 						<view class="serial-number">{{index + 1}}</view>
 						<view class="text-content">
-							<view class="music-name">{{item.name}}</view>
-							<view class="singer">{{item.singer}}</view>
+							<view class="music-name">{{item.title}}</view>
+							<view class="singer">{{item.remarks}}</view>
 						</view>
 						<tn-icon name="copy-fill" color="#FAA82C" size="60rpx" style="position: absolute; right: 0;"
-							@click="copy(item.name)"></tn-icon>
+							@click="copy(item.title)"></tn-icon>
 					</view>
 				</scroll-view>
 			</view>
@@ -54,110 +61,43 @@
 	import {
 		onLoad
 	} from '@dcloudio/uni-app'
+	import {
+		topCategory,
+		childrenCategory,
+		materialListApi
+	} from '../../request/api'
+	import {
+		useUserStore
+	} from '../../store/user'
+	import index from '../../uni_modules/uv-ui-tools'
+	const userStore = useUserStore()
 	onLoad(() => {
-
+		getTop()
+		getChildren()
 	})
-	const leftTabsId = ref(1)
-	const leftTabsList = ref([{
-			id: 1,
-			title: "图片素材"
-		},
-		{
-			id: 2,
-			title: "文字素材"
-		},
-		{
-			id: 3,
-			title: "音乐素材"
-		}
-	])
+	const leftTabsId = ref("")
+	const leftTabsList = ref([])
 	const currentTabIndex = ref(0)
-	const tabsData = ref([{
-		name: '关注',
-	}, {
-		name: '推荐',
-	}, {
-		name: '电影'
-	}, {
-		name: '科技'
-	}, {
-		name: '音乐'
-	}, {
-		name: '美食'
-	}, {
-		name: '文化'
-	}, {
-		name: '财经'
-	}, {
-		name: '手工'
-	}])
-	const imageList = ref([
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg",
-		"https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg"
-	])
-	const textList = ref([{
-			id: 1,
-			content: "曾经以为，爱情是永不落幕的烟火， 可当烟火熄灭，只剩我在黑暗中，独 自守着回忆的残烬。"
-		},
-		{
-			id: 2,
-			content: "曾经以为，爱情是永不落幕的烟火， 可当烟火熄灭，只剩我在黑暗中，独 自守着回忆的残烬。"
-		},
-		{
-			id: 3,
-			content: "曾经以为，爱情是永不落幕的烟火， 可当烟火熄灭，只剩我在黑暗中，独 自守着回忆的残烬。"
-		},
-		{
-			id: 4,
-			content: "曾经以为，爱情是永不落幕的烟火， 可当烟火熄灭，只剩我在黑暗中，独 自守着回忆的残烬。"
-		}
-	])
-	const musicList = ref([{
-			id: 1,
-			name: "爱错",
-			singer: "王力宏"
-		},
-		{
-			id: 2,
-			name: "爱错",
-			singer: "王力宏"
-		},
-		{
-			id: 3,
-			name: "爱错",
-			singer: "王力宏"
-		},
-		{
-			id: 4,
-			name: "爱错",
-			singer: "王力宏"
-		},
-		{
-			id: 5,
-			name: "爱错",
-			singer: "王力宏"
-		}
-	])
+	const tabsData = ref([])
+	const goodsPage = ref(1)
+	const triggered = ref(false)
+	const list = ref([])
 	const backPage = () => {
 		uni.navigateBack()
 	}
 	const click = (item) => {
-		console.log('item', item);
+		currentTabIndex.value = tabsData.value.findIndex(i => {
+			return i.id == item.id
+		})
+		goodsPage.value = 1
+		list.value = []
+		getClassifyGods(item.id)
 	}
 	const changeLeftTabsId = (id) => {
 		leftTabsId.value = id
+		goodsPage.value = 1
+		list.value = []
+		getChildren(id)
 	}
 	const copy = (data) => {
 		uni.setClipboardData({
@@ -168,6 +108,122 @@
 					title: "复制成功"
 				})
 			}
+		});
+	}
+
+	const getTop = () => {
+		topCategory({
+			uid: userStore.uid,
+			token: userStore.token
+		}).then(res => {
+			leftTabsList.value = res.data
+			leftTabsId.value = res.data[0].id
+			getChildren(res.data[0].id)
+		})
+	}
+
+	const getChildren = (id) => {
+		childrenCategory({
+			uid: userStore.uid,
+			token: userStore.token,
+			cate_id: id
+		}).then(res => {
+			tabsData.value = res.data
+			getClassifyGods(res.data[currentTabIndex.value].id)
+			console.log(res);
+		})
+	}
+
+	const getClassifyGods = (id) => {
+		uni.showLoading({
+			title:'加载中'
+		})
+		materialListApi({
+			uid: userStore.uid,
+			token: userStore.token,
+			cate_id: id,
+			page: goodsPage.value,
+		}).then(res => {
+			uni.hideLoading()
+			if (goodsPage.value > 1) {
+				res.data.forEach(i => {
+					list.value.push(i)
+				})
+			} else {
+				list.value = res.data
+			}
+			if (res.data.length == 0) {
+				uni.showToast({
+					icon: 'none',
+					title: '暂无更多内容了'
+				})
+
+			}
+			triggered.value = false
+		})
+	}
+
+	const handleRefresh = () => {
+		if (!triggered.value) {
+			triggered.value = true;
+			goodsPage.value = 1
+			getClassifyGodss()
+		}
+	}
+
+	const handleScrollTolower = () => {
+		goodsPage.value++
+		getClassifyGodss()
+	}
+
+	const posterSure = (item) => {
+		uni.downloadFile({
+			url: item.cover,
+			success: function(res) {
+				console.log(res)
+				wx.saveImageToPhotosAlbum({
+					filePath: res.tempFilePath,
+					success: function(res) {
+						console.log(res)
+						console.log('success')
+						uni.showToast({
+							icon:'success',
+							title:'保存成功'
+						})
+					},
+					fail: function(res) {
+						console.log(res)
+						console.log('fail')
+						if (res.errMsg === "saveImageToPhotosAlbum:fail auth deny") {
+							console.log("打开设置窗口");
+							wx.openSetting({
+								success(settingdata) {
+									console.log(settingdata)
+									if (settingdata.authSetting[
+											"scope.writePhotosAlbum"]) {
+												uni.showToast({
+													icon:'success',
+													title:'保存成功'
+												})
+										console.log("获取权限成功，再次点击图片保存到相册")
+									} else {
+										console.log("获取权限失败")
+									}
+								}
+							})
+						}
+					}
+				})
+			},
+			fail: function() {
+				console.log('fail')
+			}
+		})
+	}
+
+	const previewSingleImage = (url) => {
+		uni.previewImage({
+			urls: [url]
 		});
 	}
 </script>
@@ -257,16 +313,24 @@
 						width: 100%;
 						height: 100%;
 						display: flex;
-						justify-content: space-between;
-						align-items: center;
 						flex-wrap: wrap;
+						justify-content: space-around;
+						align-content: flex-start;
 
 						.image-item {
 							width: 220rpx;
-							height: 220rpx;
+							height: 440rpx;
 							border-radius: 8rpx 8rpx 8rpx 8rpx;
-							margin-bottom: 32rpx;
 							overflow: hidden;
+							position: relative;
+							margin-bottom: 22rpx;
+
+							.download-icon {
+								z-index: 1;
+								position: absolute;
+								right: 0;
+								top: 0;
+							}
 
 							image {
 								width: 100%;
@@ -291,12 +355,12 @@
 
 						.text-content {
 							width: 75%;
-							height: 102rpx;
+							max-height: 402rpx;
 							font-size: 24rpx;
 							overflow: hidden;
 							text-overflow: ellipsis;
 							display: -webkit-box;
-							-webkit-line-clamp: 3;
+							-webkit-line-clamp: 10;
 							-webkit-box-orient: vertical;
 						}
 					}

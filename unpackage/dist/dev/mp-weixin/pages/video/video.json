@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "tn-empty": "../../uni_modules/tuniaoui-vue3/components/empty/src/empty"
+  }
+}

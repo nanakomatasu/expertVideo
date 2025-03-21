@@ -1,27 +1,2 @@
-"use strict";
-const common_vendor = require("../../../../common/vendor.js");
-const NAN = 0 / 0;
-const reTrim = /^\s+|\s+$/g;
-const reIsBinary = /^0b[01]+$/i;
-const reIsOctal = /^0o[0-7]+$/i;
-const reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
-function toNumber(value) {
-  if (typeof value == "number") {
-    return value;
-  }
-  if (common_vendor.isSymbol(value)) {
-    return NAN;
-  }
-  if (common_vendor.isObject(value)) {
-    const other = typeof value.valueOf == "function" ? value.valueOf() : value;
-    value = common_vendor.isObject(other) ? `${other}` : other;
-  }
-  if (typeof value != "string") {
-    return value === 0 ? value : +value;
-  }
-  value = value.replace(reTrim, "");
-  const isBinary = reIsBinary.test(value);
-  return isBinary || reIsOctal.test(value) ? Number.parseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN : +value;
-}
-exports.toNumber = toNumber;
+"use strict";const s=require("../../../../common/vendor.js"),o=NaN,i=/^\s+|\s+$/g,c=/^0b[01]+$/i,e=/^0o[0-7]+$/i,f=/^[-+]0x[0-9a-f]+$/i;function b(t){if(typeof t=="number")return t;if(s.isSymbol(t))return o;if(s.isObject(t)){const r=typeof t.valueOf=="function"?t.valueOf():t;t=s.isObject(r)?`${r}`:r}if(typeof t!="string")return t===0?t:+t;t=t.replace(i,"");const n=c.test(t);return n||e.test(t)?Number.parseInt(t.slice(2),n?2:8):f.test(t)?o:+t}exports.toNumber=b;
 //# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/tuniaoui-vue3/libs/lodash/_toNumber.js.map

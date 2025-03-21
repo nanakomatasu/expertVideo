@@ -2,45 +2,20 @@
 	<view class="login-title center-box">
 		{{typeStatus == 1 ? "欢迎登录" : "欢迎注册"}}
 	</view>
-	<view class="account-number-input login-center-box">
-		<uv-input customStyle="background-color: #F8F9FD; height: 88rpx; padding: 0 24rpx;" placeholder="请输入账号"
-			maxlength="11" type="number" shape="square " border="none" v-model="accountNumber" prefixIcon="account">
-			<!-- 			<template v-slot:prefix>
-				<uv-text text="+86" margin="0 3px 0 0" type="tips"></uv-text>
-			</template> -->
-		</uv-input>
+	{{options}}
+	<view class="login-avatar center-box">
+		<image src="/static/login/loginIcon.png" mode="aspectFill"></image>
 	</view>
-	<view class="password-input login-center-box">
-		<uv-input customStyle="background-color: #F8F9FD; height: 88rpx; box-sizing: border-box; padding: 0 24rpx;"
-			v-model="password" placeholder="请输入密码" shape="square" border="none" prefixIcon="eye"
-			prefixIconStyle="font-size: 22px;color: #909399" password="true" />
-	</view>
-	<view class="invite-code-input login-center-box" v-if="typeStatus == 2">
-		<uv-input customStyle="background-color: #F8F9FD; height: 88rpx; box-sizing: border-box; padding: 0 24rpx;"
-			v-model="inviteCode" placeholder="请输入邀请码" shape="square" border="none" prefixIcon="file-text"
-			prefixIconStyle="font-size: 22px;color: #909399" password="true" />
-	</view>
-	<view class="forget-options login-center-box" v-if="typeStatus == 1" @click="navForget">
-		忘记密码?
-	</view>
-	<view class="login-btn login-center-box" v-if="typeStatus == 1">
-		登录
-	</view>
-	<view class="register-btn login-center-box" v-if="typeStatus == 2">
-		注册
+	<view class="login-btn login-center-box" v-if="typeStatus == 1" @click="getPhoneNumber">
+		微信一键登录{{devId}}
 	</view>
 	<view class="agreement-content login-center-box">
-		<view class="agreement-status">
-			<view class="status-radios" @click="changeAgreementStatus"><uv-icon name="checkmark" size="20rpx"
-					style="position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%);" color="#fff"
-					v-if="agreementStatus == 1" :class="[agreementStatus == 1 ? 'check-status' : '']"></uv-icon></view>
+		<view class="status-radios" @click="changeAgreementStatus"
+			:class="[agreementStatus == 1 ? 'check-status' : '']">
+			<uv-icon name="checkmark" size="20rpx" color="#fff" v-if="agreementStatus == 1"></uv-icon>
 		</view>
-		<view class="agreement-content">已阅读并同意以下用户注册协议《隐私权政策》和《注册相关协议》</view>
-	</view>
-	<view class="change-login-register login-center-box">
-		<view class="change-item" v-for="item in accountTypeList" :class="[item.id == typeStatus ? 'select-item' : '']"
-			@click="changeAccountType(item.id)">
-			{{item.title}}
+		<view class="agreement-text-content">我已阅读并同意<span class="agreement-title"
+				@click="navUserAgreement">《用户协议》</span>和<span class="agreement-title" @click="navPrivacy">《隐私政策》</span>
 		</view>
 	</view>
 </template>
@@ -49,12 +24,37 @@
 	import {
 		ref
 	} from 'vue';
-
+	import {
+		loginApi,
+		telnumberApi
+	} from '../../request/api';
+	import {
+		useUserStore
+	} from '../../store/user';
+	const userStore = useUserStore()
 	const agreementStatus = ref(0)
 	const typeStatus = ref(1)
 	const accountNumber = ref("")
 	const password = ref("")
 	const inviteCode = ref("")
+	const showPopup = ref(false)
+	const devId = ref("")
+	const options = ref("")
+	import {
+		onLoad,
+		onShow
+	} from '@dcloudio/uni-app'
+	onLoad((options) => {
+		if (options.q) {
+			let codeStr = decodeURIComponent(options.q)
+			options.value = codeStr
+			console.log(options.value);
+			const codeId = codeStr.match(/[?&]inviter=(\d+)/)
+			devId.value = codeId ? codeId[1] : ''
+			console.log(devId.value);
+		}
+	})
+
 	const changeAgreementStatus = () => {
 		if (agreementStatus.value == 0) {
 			agreementStatus.value = 1
@@ -79,32 +79,103 @@
 			url: '/pages/account/forget'
 		})
 	}
+	const navPrivacy = () => {
+		uni.navigateTo({
+			url: '/pages/agreement/privacyPolicy'
+		})
+	}
+	const navUserAgreement = () => {
+		uni.navigateTo({
+			url: '/pages/agreement/userAgreement'
+		})
+	}
+	const getPhoneNumber = () => {
+		if(agreementStatus.value == 0) {
+			uni.showToast({
+				icon:'none',
+				title: '请阅读并同意《用户协议》和《隐私政策》'
+			})
+			return
+		}
+		uni.showLoading({
+			title: '登陆中',
+			mask: false
+		})
+		uni.login({
+			success(loginRes) {
+				loginApi({
+					code: loginRes.code,
+					pid: devId.value
+				}).then(res => {
+					if (res.code != 1) {
+						uni.showToast({
+							icon: 'none',
+							title: res.info
+						})
+						return
+					} else {
+						userStore.setUid(res.data.id)
+						userStore.setToken(res.data.token)
+						userStore.setUserInfo(res.data)
+						uni.showToast({
+							icon: 'success',
+							title: '登录成功'
+						})
+						setTimeout(() => {
+							uni.switchTab({
+								url: '/pages/tabbar/index'
+							})
+						}, 500)
+					}
+				})
+			}
+		})
+	}
 </script>
 
 <style lang="scss" scoped>
 	page {
+		box-sizing: border-box;
 		background: #F5F6F9;
 		overflow: hidden;
 	}
 
 	.login-title {
+		padding-top: 48rpx;
 		font-size: 48rpx;
 		color: #FAA82C;
 		text-align: center;
-		margin-top: 200rpx;
 	}
 
-	.account-number-input {
-		margin-top: 76rpx;
+	.login-avatar {
+		margin-top: 100rpx;
+		width: 320rpx;
+		height: 320rpx;
+		border-radius: 50%;
+		overflow: hidden;
+		position: relative;
+
+		image {
+			width: 100%;
+			height: 100%;
+		}
 	}
 
-	.password-input {
-		margin-top: 24rpx;
+	.agreement-title {
+		color: #007AFF;
 	}
 
-	.invite-code-input {
-		margin-top: 24rpx;
-	}
+	// .account-number-input {
+	// 	margin-top: 76rpx;
+	// }
+
+	// .password-input {
+	// 	margin-top: 24rpx;
+	// }
+
+	// .invite-code-input {
+	// 	margin-top: 24rpx;
+	// }
 
 	.login-center-box {
 		width: calc(100% - 140rpx);
@@ -120,7 +191,17 @@
 	}
 
 	.login-btn {
-		margin-top: 48rpx;
+		margin-top: 200rpx;
+		height: 80rpx;
+		background-color: #FAA82C;
+		text-align: center;
+		line-height: 80rpx;
+		font-size: 32rpx;
+		color: #fff;
+		border-radius: 8rpx 8rpx 8rpx 8rpx;
+	}
+
+	.get-phone-btn {
 		height: 80rpx;
 		background-color: #FAA82C;
 		text-align: center;
@@ -144,31 +225,23 @@
 	.agreement-content {
 		margin-top: 16rpx;
 		display: flex;
-		align-items: end;
-		height: 68rpx;
+		align-items: center;
+		justify-content: center;
 
-		.agreement-status {
-			box-sizing: border-box;
-			padding: 9rpx 4rpx;
-			width: 40rpx;
-			height: 68rpx;
-
-			.status-radios {
-				position: relative;
-				width: 25rpx;
-				height: 25rpx;
-				border-radius: 50%;
-				border: 2rpx solid #00E000;
-			}
-
-			.check-status {
-				background-color: #00E000;
-			}
+		.status-radios {
+			position: relative;
+			width: 25rpx;
+			height: 25rpx;
+			border-radius: 50%;
+			border: 2rpx solid #00E000;
 		}
 
-		.agreement-content {
-			width: calc(100% - 40rpx);
-			height: 100%;
+		.check-status {
+			background-color: #00E000;
+		}
+
+		.agreement-text-content {
+			margin-left: 20rpx;
 			font-size: 24rpx;
 			color: #737373;
 		}

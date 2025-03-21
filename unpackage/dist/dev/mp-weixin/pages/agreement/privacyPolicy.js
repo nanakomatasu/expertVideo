@@ -1,0 +1,2 @@
+"use strict";const e=require("../../common/vendor.js"),n=require("../../request/api.js"),o=require("../../store/user.js"),c={__name:"privacyPolicy",setup(_){e.onLoad(()=>{a()}),o.useUserStore();const t=e.ref(""),a=()=>{n.dataCenter({content:"YSZC"}).then(r=>{t.value=r.data.content})};return(r,u)=>({a:t.value})}},s=e._export_sfc(c,[["__scopeId","data-v-20982560"]]);wx.createPage(s);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/agreement/privacyPolicy.js.map

@@ -1,12 +1,2 @@
-"use strict";
-const common_assets = require("../../common/assets.js");
-const common_vendor = require("../../common/vendor.js");
-const _sfc_main = {};
-function _sfc_render(_ctx, _cache) {
-  return {
-    a: common_assets._imports_0$3
-  };
-}
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-cabb9842"]]);
-wx.createPage(MiniProgramPage);
+"use strict";const e=require("../../common/vendor.js"),n=require("../../request/api.js"),o=require("../../store/user.js"),s={__name:"aboutUs",setup(_){e.onLoad(()=>{r()}),o.useUserStore();const t=e.ref(""),r=()=>{n.dataCenter({content:"GYWM"}).then(a=>{t.value=a.data.content})};return(a,u)=>({a:t.value})}},c=e._export_sfc(s,[["__scopeId","data-v-cabb9842"]]);wx.createPage(c);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/mineFunc/aboutUs.js.map

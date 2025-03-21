@@ -1,6 +1,2 @@
-"use strict";
-const isEmptyVariableInDefault = (variable, defaultValue = void 0) => {
-  return variable === void 0 || variable === null ? defaultValue : variable;
-};
-exports.isEmptyVariableInDefault = isEmptyVariableInDefault;
+"use strict";const n=(t,i=void 0)=>t??i;exports.isEmptyVariableInDefault=n;
 //# sourceMappingURL=../../../../.sourcemap/mp-weixin/uni_modules/tuniaoui-vue3/utils/is-empty.js.map

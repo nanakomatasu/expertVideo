@@ -1,0 +1,2 @@
+"use strict";const s=require("../common/vendor.js"),d=s.defineStore("user",()=>{const t=s.ref(""),r=s.ref(""),c=s.ref({}),o=s.ref(""),n=s.ref(""),u=s.ref("");return{token:t,uid:r,userInfo:c,currentVideo:o,taskVideoCode:n,setTaskVideoCode:e=>{n.value=e},setCurrentVideo:e=>{o.value=e},orderNumber:u,setOrderNumber:e=>{u.value=e},setToken:e=>{t.value=e},setUid:e=>{r.value=e},setUserInfo:e=>{e.value=e}}},{persist:!0});exports.useUserStore=d;
+//# sourceMappingURL=../../.sourcemap/mp-weixin/store/user.js.map

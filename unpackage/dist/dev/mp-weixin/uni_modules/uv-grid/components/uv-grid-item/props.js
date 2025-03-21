@@ -1,20 +1,2 @@
-"use strict";
-var _a, _b;
-const common_vendor = require("../../../../common/vendor.js");
-const props = {
-  props: {
-    // 宫格的name
-    name: {
-      type: [String, Number, null],
-      default: null
-    },
-    // 背景颜色
-    bgColor: {
-      type: String,
-      default: "transparent"
-    },
-    ...(_b = (_a = common_vendor.index.$uv) == null ? void 0 : _a.props) == null ? void 0 : _b.gridItem
-  }
-};
-exports.props = props;
+"use strict";const t=require("../../../../common/vendor.js");var r,e;const n={props:{name:{type:[String,Number,null],default:null},bgColor:{type:String,default:"transparent"},...(e=(r=t.index.$uv)==null?void 0:r.props)==null?void 0:e.gridItem}};exports.props=n;
 //# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uv-grid/components/uv-grid-item/props.js.map

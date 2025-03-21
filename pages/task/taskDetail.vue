@@ -2,23 +2,30 @@
 	<view class="navigation-bar navigation-bar-background">
 		<view class="navgation-bar-content text-color">
 			<view style="position: absolute; left: 32rpx; top: 11rpx;"> <uv-icon name="arrow-left" color="#fff"
-					@click="backPages"></uv-icon></view>达人计划
+					@click="backPages"></uv-icon></view>创客计划
 		</view>
 	</view>
 	<view class="user-card center-box">
 		<view class="user-avatar">
-			<image src="https://wx3.sinaimg.cn/mw690/0040jbadgy1hy561drrv0j60u1141qfb02.jpg" mode="aspectFill"></image>
+			<image :src="userInfo.headimg" mode="aspectFill"></image>
 		</view>
 		<view class="user-info">
-			<view class="user-nick">黑大帅</view>
-			<view class="user-identity">身份:达人</view>
+			<view class="user-nick">{{userInfo.nickname}}</view>
+			<view class="user-lable">
+				<view class="user-identity user-lable-item" v-if="userInfo.ievel == 0">身份：普通用户
+				</view>
+				<view class="user-level user-lable-item" v-if="userInfo.ievel == 1">等级：创客</view>
+				<view class="user-level user-lable-item" v-if="userInfo.ievel == 2">身份：推客</view>
+				<view class="user-level user-lable-item" v-if="userInfo.ievel == 3">身份：团长</view>
+				<view class="user-level user-lable-item" v-if="userInfo.ievel == 4">身份：服务商</view>
+			</view>
 		</view>
 	</view>
 	<view class="tips-content center-box">
 		<view class="tips-lable">
 			Tips
 		</view>
-		<view class="tips-content-text">第4个购买任务完成(财富外交官)</view>
+		<!-- 		<view class="tips-content-text">第4个购买任务完成(财富外交官)</view> -->
 	</view>
 	<view class="task-content center-box">
 		<tn-title title="当前步骤" mode="vLine" assist-color="#FAA82C" color="#FAA82C" size="lg" />
@@ -42,7 +49,7 @@
 			</view>
 			<uv-input style="background-color: #F6F6F6; border-radius: 8rpx 8rpx 8rpx 8rpx;" placeholder="请输入订单号"
 				v-model="orderSn"></uv-input>
-			<view class="next-task">已完成，下个任务</view>
+			<view class="next-task" @click="completeTask">已完成，下个任务</view>
 		</view>
 	</view>
 </template>
@@ -52,7 +59,31 @@
 		ref
 	} from 'vue';
 
+	import {
+		useUserStore
+	} from '../../store/user';
+
+	import {
+		userInfoApi,
+		taskListApi,
+		completeTaskApi
+	} from '../../request/api';
+
+	import {
+		onLoad
+	} from '@dcloudio/uni-app'
+
+	onLoad(() => {
+		getUserInfo()
+	})
+
+	const userStore = useUserStore()
+
 	const orderSn = ref("")
+
+	const userInfo = ref({})
+
+	const successTaskCount = ref(0)
 
 	const taskFlowSteps = ref([{
 			id: 1,
@@ -60,7 +91,7 @@
 		},
 		{
 			id: 2,
-			title: "收货人姓名和电话必须与达人系统一致"
+			title: "收货人姓名和电话必须与创客系统一致"
 		}
 	])
 	const backPages = () => {
@@ -68,13 +99,65 @@
 	}
 	const openVideo = () => {
 		wx.openChannelsUserProfile({
-			finderUserName: 'sph7qekAjBcxbjN',
+			// finderUserName: 'sph7qekAjBcxbjN',
+			finderUserName: userStore.taskVideoCode,
 			success(res) {
 				console.log(res);
 			},
 			fail(res) {
 				console.log(res);
 			}
+		})
+	}
+
+	const getUserInfo = () => {
+		userInfoApi({
+			uid: userStore.uid,
+			token: userStore.token
+		}).then(res => {
+			userInfo.value = res.data
+		})
+	}
+
+	const getTaskList = () => {
+		taskListApi({
+			uid: userStore.uid,
+			token: userStore.token
+		}).then(res => {
+			calcTask(res.data)
+		})
+	}
+
+	const calcTask = (array) => {
+		if (array.length == 0) {
+			successTaskCount.value = 0
+		} else {
+			const filteredArray = array.filter(item => item.order_status && item.order_status === 2);
+			successTaskCount.value = filteredArray.length;
+		}
+	}
+
+	const completeTask = () => {
+		completeTaskApi({
+			uid: userStore.uid,
+			token: userStore.token,
+			window_person_id: userStore.orderNumber,
+			wechat_order_number: orderSn.value
+		}).then(res => {
+			if (res.code == 0) {
+				uni.showToast({
+					icon: 'none',
+					title: res.info
+				})
+				return
+			}
+			uni.showToast({
+				icon: 'success',
+				title: '提交成功'
+			})
+			setTimeout(() => {
+				uni.navigateBack()
+			}, 500)
 		})
 	}
 </script>
@@ -119,6 +202,8 @@
 		}
 
 		.user-info {
+			display: flex;
+			flex-direction: column;
 			margin-left: 16rpx;
 
 			.user-nick {
@@ -127,8 +212,27 @@
 				font-weight: bold;
 			}
 
+
+			.user-lable {
+				width: 100%;
+				display: flex;
+				margin-top: 44rpx;
+
+				.user-lable-item {
+					padding: 4rpx 16rpx;
+					font-size: 24rpx;
+					color: #fff;
+					background-color: #FAA82C;
+					border-radius: 26rpx 26rpx 26rpx 26rpx;
+					white-space: nowrap;
+				}
+
+				.user-level {
+					margin-left: 22rpx;
+				}
+			}
+
 			.user-identity {
-				margin-top: 24rpx;
 				padding: 4rpx 16rpx;
 				background-color: #FAA82C;
 				font-size: 24rpx;

@@ -40,6 +40,13 @@
 	.content-box {
 		background: linear-gradient(180deg, #E4DFD9 0%, #E7DBCD 36%, #E4D8C8 67%, #DDCAB0 100%);
 	}
+	
+	.data-center-content {
+		box-sizing: border-box;
+		width: 100%;
+		height: 100%;
+		padding: 32rpx;
+	}
 
 	/*每个页面公共css */
 </style>

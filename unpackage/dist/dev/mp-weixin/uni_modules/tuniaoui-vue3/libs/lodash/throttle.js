@@ -1,21 +1,2 @@
-"use strict";
-const common_vendor = require("../../../../common/vendor.js");
-const uni_modules_tuniaouiVue3_libs_lodash_debounce = require("./debounce.js");
-const FUNC_ERROR_TEXT = "Expected a function";
-function throttle(func, wait, options) {
-  let leading = true, trailing = true;
-  if (typeof func != "function") {
-    throw new TypeError(FUNC_ERROR_TEXT);
-  }
-  if (common_vendor.isObject(options)) {
-    leading = "leading" in options ? !!options.leading : leading;
-    trailing = "trailing" in options ? !!options.trailing : trailing;
-  }
-  return uni_modules_tuniaouiVue3_libs_lodash_debounce.debounce(func, wait, {
-    leading,
-    maxWait: wait,
-    trailing
-  });
-}
-exports.throttle = throttle;
+"use strict";const u=require("../../../../common/vendor.js"),l=require("./debounce.js"),c="Expected a function";function o(n,r,e){let t=!0,i=!0;if(typeof n!="function")throw new TypeError(c);return u.isObject(e)&&(t="leading"in e?!!e.leading:t,i="trailing"in e?!!e.trailing:i),l.debounce(n,r,{leading:t,maxWait:r,trailing:i})}exports.throttle=o;
 //# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/tuniaoui-vue3/libs/lodash/throttle.js.map
