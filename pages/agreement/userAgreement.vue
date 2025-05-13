@@ -8,7 +8,9 @@
 	import {
 		ref
 	} from 'vue';
-	import {onLoad} from '@dcloudio/uni-app'
+	import {
+		onLoad
+	} from '@dcloudio/uni-app'
 	import {
 		dataCenter
 	} from '../../request/api';

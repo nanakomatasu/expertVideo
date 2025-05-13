@@ -121,20 +121,6 @@
 	const lastLevel = ref("")
 	const currentLevel = ref("")
 	onShow(() => {
-		if (userStore.token == "") {
-			uni.showModal({
-				title: '请先去登陆吧',
-				success(res) {
-					if (res.confirm) {
-						uni.navigateTo({
-							url: "/pages/account/login"
-						})
-					}
-
-				}
-			})
-			return
-		}
 		tabs.value = []
 		getUserInfo()
 		getTaskList()
@@ -202,12 +188,6 @@
 			url: "/pages/mineFunc/aboutUs"
 		},
 		{
-			id: 10,
-			icon: "/static/mine/tuichudenglu.png",
-			title: "退出登录",
-			url: ""
-		},
-		{
 			id: 11,
 			icon: "/static/mine/tuidan.png",
 			title: "退单列表",
@@ -218,6 +198,12 @@
 			icon: "/static/mine/notify.png",
 			title: "消息通知",
 			url: "/pages/mineFunc/notify"
+		},
+		{
+			id: 10,
+			icon: "/static/mine/tuichudenglu.png",
+			title: "退出登录",
+			url: ""
 		}
 	])
 
@@ -252,6 +238,20 @@
 	const userInfo = ref({})
 
 	const navFunc = (item) => {
+		if (userStore.token == "" || userStore.uid == "") {
+			uni.showModal({
+				title: '请先去登陆吧',
+				success(res) {
+					if (res.confirm) {
+						uni.navigateTo({
+							url: "/pages/account/login"
+						})
+					}
+		
+				}
+			})
+			return
+		}
 		if (item.id == 2) {
 			if (userInfo.value.ievel == 0) {
 				uni.showToast({
@@ -261,7 +261,8 @@
 				return
 			}
 			if (userInfo.value.window_goods_name == "" || userInfo.value
-				.video_account == "" || userInfo.value.phone == "" || userInfo.value.window_goods_name == null || userInfo.value
+				.video_account == "" || userInfo.value.phone == "" || userInfo.value.window_goods_name == null ||
+				userInfo.value
 				.video_account == null || userInfo.value.phone == null) {
 				uni.showToast({
 					icon: 'none',

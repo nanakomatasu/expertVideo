@@ -20,7 +20,7 @@
 		<view class="user-nick content-item">
 			<view class="content-item-title">昵称</view>
 			<view class="content-item-main">
-				<input type="text" v-model="nick" placeholder="请输入昵称" />
+				<input type="text" v-model="nick" placeholder="请输入昵称" disabled="true"/>
 			</view>
 		</view>
 		<!-- 		<view class="user-gender content-item">

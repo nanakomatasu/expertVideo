@@ -7,7 +7,7 @@
 		<image src="/static/login/loginIcon.png" mode="aspectFill"></image>
 	</view>
 	<view class="login-btn login-center-box" v-if="typeStatus == 1" @click="getPhoneNumber">
-		微信一键登录{{devId}}
+		微信一键登录
 	</view>
 	<view class="agreement-content login-center-box">
 		<view class="status-radios" @click="changeAgreementStatus"

@@ -64,28 +64,13 @@
 		taskListApi,
 		userInfoApi,
 		createTask,
-		getTzt,
-		userInfoApi
+		getTzt
 	} from '../../request/api';
 	import {
 		onShow,
 		onLoad
 	} from '@dcloudio/uni-app'
 	onShow(() => {
-		if (userStore.token == "") {
-			uni.showModal({
-				title: '请先去登陆吧',
-				success(res) {
-					if (res.confirm) {
-						uni.navigateTo({
-							url: "/pages/account/login"
-						})
-					}
-		
-				}
-			})
-		
-		}
 		flag.value = 0
 		getTaskList()
 		getUserInfo()
@@ -101,7 +86,6 @@
 	const completionCount = ref(0)
 	const percentage = ref(0)
 	const courseList = ref([])
-	const userInfo = ref({})
 	const openPopup = () => {
 		showPopup.value = true
 	}
@@ -118,8 +102,20 @@
 			uid: userStore.uid,
 			token: userStore.token
 		}).then(res => {
-			courseList.value = res.data
-			calcTask(res.data)
+			// Check if all tasks have task_status true and some don't have order_status
+			const allTaskStatusTrue = res.data.every(task => task.task_status);
+			const hasNoOrderStatus = res.data.some(task => !task.order_status);
+			
+			if (allTaskStatusTrue && hasNoOrderStatus) {
+				// Add order_status=2 to all tasks
+				res.data = res.data.map(task => ({
+					...task,
+					order_status: 2
+				}));
+			}
+			
+			courseList.value = res.data;
+			calcTask(res.data);
 		})
 	}
 	const getUserInfo = () => {
@@ -132,6 +128,20 @@
 	}
 	const createTaskOrder = (item) => {
 		if (flag.value == 0) {
+			if (userStore.token == "") {
+				uni.showModal({
+					title: '请先去登陆吧',
+					success(res) {
+						if (res.confirm) {
+							uni.navigateTo({
+								url: "/pages/account/login"
+							})
+						}
+			
+					}
+				})
+				return
+			}
 			flag.value = 1
 			if(userInfo.value.phone == null || userInfo.value.phone == "") {
 				uni.showModal({

@@ -50,17 +50,9 @@
 						<view class="user-nick">
 							{{item.nickname}}
 							<span style="margin-left: 15rpx;">{{item.phone}}</span>
-							<view class="user-status" v-if="item.light_status == 3">
-								<image src="/static/team/red.png" mode=""></image>
-							</view>
-							<view class="user-status" v-if="item.light_status == 2">
-								<image src="/static/team/green.png" mode=""></image>
-							</view>
-							<view class="user-status" v-if="item.light_status == 1">
-								<image src="/static/team/yellow.png" mode=""></image>
-							</view>
-							<view class="zhitui-user" style="margin-left: 20rpx;" v-if="selectTabId == 1">由{{item.pid_user.nickname}}直推</view>
 						</view>
+						<view class="zhitui-user" v-if="selectTabId == 1">
+							由{{item.pid_user.nickname}}直推</view>
 						<view class="join-time">{{item.create_at}}</view>
 					</view>
 					<view class="user-level" v-if="item.ievel == 0">普通用户</view>
@@ -70,13 +62,26 @@
 					<view class="user-level" v-if="item.ievel == 4">服务商</view>
 				</view>
 				<view class="second-line">
-					<view class="second-line-item">
-						<view class="second-line-item-title">团队总人数</view>
-						<view class="second-line-item-data">{{item.total_number_of_my_team}}</view>
+					<view class="second-line-content">
+						<view class="second-line-item">
+							<view class="second-line-item-title">团队总人数</view>
+							<view class="second-line-item-data">{{item.total_number_of_my_team}}</view>
+						</view>
+						<view class="second-line-item">
+							<view class="second-line-item-title">直推总人数</view>
+							<view class="second-line-item-data">{{item.total_number_of_my_direct_push}}</view>
+						</view>
 					</view>
-					<view class="second-line-item">
-						<view class="second-line-item-title">直推总人数</view>
-						<view class="second-line-item-data">{{item.total_number_of_my_direct_push}}</view>
+					<view class="status-lights">
+						<view class="user-status" v-if="item.light_status == 3">
+							<image src="/static/team/red.png" mode=""></image>
+						</view>
+						<view class="user-status" v-if="item.light_status == 2">
+							<image src="/static/team/green.png" mode=""></image>
+						</view>
+						<view class="user-status" v-if="item.light_status == 1">
+							<image src="/static/team/yellow.png" mode=""></image>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -286,17 +291,6 @@
 							color: #1A1A1A;
 							display: flex;
 							align-items: center;
-
-							.user-status {
-								margin-left: 30rpx;
-								width: 30rpx;
-								height: 30rpx;
-
-								image {
-									width: 100%;
-									height: 100%;
-								}
-							}
 						}
 
 						.join-time {
@@ -325,17 +319,52 @@
 					justify-content: center;
 					align-items: center;
 					margin-top: 24rpx;
+					padding: 0 20rpx;
+					box-sizing: border-box;
+					position: relative;
 
-					.second-line-item {
-						color: #1A1A1A;
-						font-size: 24rpx;
-						width: 200rpx;
-						text-align: center;
+					.second-line-content {
+						display: flex;
+						justify-content: center;
+						flex: 1;
 
-						.second-line-item-title {}
+						.second-line-item {
+							color: #1A1A1A;
+							font-size: 24rpx;
+							width: 200rpx;
+							text-align: center;
 
-						.second-line-item-data {
-							margin-top: 8rpx;
+							.second-line-item-title {
+								color: #666;
+								font-size: 22rpx;
+								margin-bottom: 8rpx;
+							}
+
+							.second-line-item-data {
+								font-size: 28rpx;
+								font-weight: bold;
+								color: #333;
+							}
+						}
+					}
+
+					.status-lights {
+						position: absolute;
+						right: 60rpx;
+						top: 50%;
+						transform: translateY(-50%);
+						display: flex;
+						align-items: center;
+
+						.user-status {
+							width: 28rpx;
+							height: 28rpx;
+							margin-left: 8rpx;
+
+							image {
+								width: 100%;
+								height: 100%;
+							}
 						}
 					}
 				}

@@ -53,20 +53,6 @@
 	} from '@dcloudio/uni-app'
 	onShow(() => {
 		getT()
-		if (userStore.token == "") {
-			uni.showModal({
-				title: '请先去登陆吧',
-				success(res) {
-					if (res.confirm) {
-						uni.navigateTo({
-							url: "/pages/account/login"
-						})
-					}
-
-				}
-			})
-
-		}
 		getClassifyGods()
 	})
 	const hideStatus = ref('1')

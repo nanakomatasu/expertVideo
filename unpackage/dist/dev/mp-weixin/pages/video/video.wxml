@@ -1,1 +1,1 @@
-<video wx:if="{{a}}" src="{{b}}" style="width:100%;height:100%"></video><tn-empty wx:if="{{c}}" u-s="{{['tips']}}" u-i="59329e49-0" bind:__l="__l" u-p="{{d}}"><view slot="tips">暂未开放</view></tn-empty>
+<video wx:if="{{a}}" src="{{b}}" style="width:100%;height:100%"></video><tn-empty wx:if="{{c}}" u-s="{{['tips']}}" u-i="0078adae-0" bind:__l="__l" u-p="{{d}}"><view slot="tips">暂未开放</view></tn-empty>

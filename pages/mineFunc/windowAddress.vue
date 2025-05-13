@@ -13,7 +13,7 @@
 		</view>
 		<uv-input v-model="inputValue" placeholder="请输入标题" style="margin-top: 32rpx; font-weight: bold;">
 			<template v-slot:prefix>
-				<uv-text text="【蚂蚁联盟】-" margin="0 3px 0 0" type="tips"></uv-text>
+				<uv-text text="蚂蚁联盟-" margin="0 3px 0 0" type="tips"></uv-text>
 			</template>
 		</uv-input>
 	</view>
@@ -113,7 +113,8 @@
 		changeUserInfoApi({
 			uid: userStore.uid,
 			token: userStore.token,
-			window_goods_name: "【蚂蚁联盟】" + inputValue.value,
+			window_goods_name: "蚂蚁联盟-" + inputValue.value,
+			nickname:"蚂蚁联盟-" + inputValue.value,
 			video_account: videoId.value,
 			phone: phone.value,
 		}).then(res => {
@@ -134,7 +135,7 @@
 			uid: userStore.uid,
 			token: userStore.token
 		}).then(res => {
-			inputValue.value = res.data.window_goods_name.replace(new RegExp("【蚂蚁联盟】", 'g'), '');
+			inputValue.value = res.data.window_goods_name.replace(new RegExp("蚂蚁联盟", 'g'), '');
 			windowsCode.value = res.data.window_qr_code
 			videoId.value = res.data.video_account
 			phone.value = res.data.phone
