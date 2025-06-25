@@ -90,9 +90,9 @@
 		})
 	}
 	const getPhoneNumber = () => {
-		if(agreementStatus.value == 0) {
+		if (agreementStatus.value == 0) {
 			uni.showToast({
-				icon:'none',
+				icon: 'none',
 				title: '请阅读并同意《用户协议》和《隐私政策》'
 			})
 			return
